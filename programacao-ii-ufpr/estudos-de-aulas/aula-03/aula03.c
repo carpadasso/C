@@ -6,7 +6,7 @@ int main()
 {
    // --------------------------------------------------
    // Tema 01: Strings Constantes
-   /*
+
    // Declarações de strings constantes
    char *possibilidade1 = "PROG2";
    char possibilidade2[] = "PROG2";
@@ -20,11 +20,10 @@ int main()
    printf("%s -- %d\n", possibilidade1, possibilidade1);
    printf("%s -- %d\n", possibilidade2, possibilidade2);
    printf("%s -- %d\n", possibilidade3, possibilidade3);
-   */
 
    // --------------------------------------------------
    // Tema 02: Formas alternativas de escrita de Strings
-   /*
+
    char *string = "PROG2";
 
    printf("Alternativa com puts: \n");
@@ -33,11 +32,10 @@ int main()
    printf("Alternativa iterativa: \n");
    for (int i = 0; string[i]; i++)
       putchar(string[i]);
-   */
 
    // --------------------------------------------------
    // Tema 03: Leitura de Strings
-   /*
+
    char string[101];
 
    printf("Digite uma string: ");
@@ -64,7 +62,6 @@ int main()
    getchar();
 
    printf("A string digitada foi: %s", string);
-   */
 
    // --------------------------------------------------
    // Tema 04: Manipulação de Strings
