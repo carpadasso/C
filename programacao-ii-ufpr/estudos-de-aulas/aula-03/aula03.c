@@ -184,6 +184,7 @@ int main()
    token = strtok(string, separador);
    do {
       printf("O token encontrado foi: %s\n", token);
+      token = strtok(NULL, separador);
    } while (token);
 
    return (0);
