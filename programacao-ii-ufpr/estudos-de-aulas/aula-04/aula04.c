@@ -102,21 +102,64 @@ int main()
    mesmo, utilizando um arquivo previamente aberto. Além disso, as operações
    de leitura de arquivos são categorizadas em Leituras Simples e Formatadas. */
 
-   // Leituras Simples
+   // Leituras Simples de Arquivos
    /* Função int fgetc(FILE* s)
       - Permite ler um único byte em um arquivo especificado.
       - Parâmetro s: Stream que indica o arquivo que o byte deve ser lido.
       - Em caso de sucesso, a função retorna o byte lido.
       -> Opção via macro: int gect(FILE* s)
       -> Opção para o stream stdin: int getchar() */
-   char c;
-   c = fgetc(f);
+   char c1;
+   c1 = fgetc(f);
 
+   /* Função char* fgets(char *str, int c, FILE* s)
+      - Devido aos potenciais estouros de buffer, uma função alternativa de
+      leitura de linhas de arquivos para strings foi implementada.
+      - Nesse caso, um limite de caracteres lidos é definido para c-1, e o
+      caractere de fim de linha (\n) é incluido na leitura de uma linha
+      qualquer, esta lida do stream s e armazenada na string str (sendo c,
+      s e str parâmetros da função). */
+   char *str1;
+   fgets(str1, 21, f);
+
+   // Leitura Formatada de Arquivos
+   /* Função int fscanf(FILE* s, const char* f, ...)
+      - Oferece a leitura de arquivos seguindo um padrão de formatação (o mesmo
+      do scanf). A função fscanf() possui N parâmetros.
+      - Parâmetro s: Stream que indica de qual arquivos os dados devem ser
+      lidos.
+      - Parâmetro f: String que determina o formato de leitura.
+      - Parâmetros adicionais: Variáveis onde os dados devem ser inseridos,
+      considerando as posições previstas no formato.
+      - Em caso de sucesso, a função retorna o número de dados lidos.
+      -> Opção para string: int sscanf(const char* s, const char* f, ...)
+      -> Opção para o stream stdin: int scanf (const char* f, ...) */
+   char c2;
+   fscanf(f, "%c", c2);
+
+   // Tema 04: O Fim de Arquivo
+   /* Em iterações com arquivos, é crucial identificar o ponto que indica o fim
+   dos dados presentes no arquivo. A partir desse ponto, as operações de leitura
+   não serão mais executadas, umas vez que não há mais dados disponíveis para
+   serem retornados. */
+
+   /* Função int feof(FILE *stream)
+      - A linguagem de programação C oferece recursos para identificar e lidar
+      com o final de um arquivo, e um dos mais comuns é a função feof().
+      - Retorna zero (0) se o fim do arquivo não foi alcançado.
+      - Retorna um número diferente de zero se o fim do arquivo foi alcançado. */
+   feof(f);
+
+   /* Outra opção para verificar o fim de arquivo é verificar a constante EOF
+   (End of File), que é retornada por funções como getchar() e fgetc() quando
+   nenhum novo caractere é lido. */
+
+   /* Função int ferror(FILE* stream)
+      - Também é possível verificar se ocorreu algum erro na última operação
+      realizada em uma stream de arquivo usando a função ferror().
+      - Retorna zero se nenhuma ocorrência de erro foi registrada. */
+   ferror(f);
    
-
-
-
-
    //----------------------------------------
    /* Função int fclose(FILE* stream):
       - Utilizada para fechar arquivos abertos.
