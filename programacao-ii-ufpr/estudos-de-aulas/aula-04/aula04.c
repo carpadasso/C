@@ -47,7 +47,7 @@ int main()
       - "a+": O conteúdo existente é preservado; O ponteiro de leitura é
       alocado no início do arquivo, e o ponteiro de escrita é alocado no
       final do arquivo. */
-   f = fopen("meuArquivo.txt", "a");
+   f = fopen("meuArquivo.txt", "a+");
 
    //---------------------------------------
    //        ÁREA DEDICADA A FUNÇÕES
@@ -111,6 +111,7 @@ int main()
       -> Opção para o stream stdin: int getchar() */
    char c1;
    c1 = fgetc(f);
+   printf("%c\n", c1);
 
    /* Função char* fgets(char *str, int c, FILE* s)
       - Devido aos potenciais estouros de buffer, uma função alternativa de
@@ -119,7 +120,7 @@ int main()
       caractere de fim de linha (\n) é incluido na leitura de uma linha
       qualquer, esta lida do stream s e armazenada na string str (sendo c,
       s e str parâmetros da função). */
-   char *str1;
+   char *str1 = "";
    fgets(str1, 21, f);
 
    // Leitura Formatada de Arquivos
@@ -135,7 +136,7 @@ int main()
       -> Opção para string: int sscanf(const char* s, const char* f, ...)
       -> Opção para o stream stdin: int scanf (const char* f, ...) */
    char c2;
-   fscanf(f, "%c", c2);
+   fscanf(f, "%c", &c2);
 
    // Tema 04: O Fim de Arquivo
    /* Em iterações com arquivos, é crucial identificar o ponto que indica o fim
@@ -159,7 +160,7 @@ int main()
       realizada em uma stream de arquivo usando a função ferror().
       - Retorna zero se nenhuma ocorrência de erro foi registrada. */
    ferror(f);
-   
+
    //----------------------------------------
    /* Função int fclose(FILE* stream):
       - Utilizada para fechar arquivos abertos.
