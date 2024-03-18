@@ -12,7 +12,7 @@ int main()
    i = 1;
    token = strtok(string, ", ");
    do {
-      printf("Elemento da coluna %d: %s", i, token);
+      printf("Elemento da coluna %d: %s\n", i, token);
       i++;
       token = strtok(NULL, ", ");
    } while (token);
