@@ -7,8 +7,9 @@ int main()
    int i;
    
    printf("Digite a string CSV: ");
-   scanf("%s", string);
-
+   scanf("%[^\n]", string);
+   getchar();
+   
    i = 1;
    token = strtok(string, ", ");
    do {
