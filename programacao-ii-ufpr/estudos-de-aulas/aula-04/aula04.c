@@ -50,16 +50,69 @@ int main()
    f = fopen("meuArquivo.txt", "a");
 
    //---------------------------------------
-   // ÁREA DEDICADA A FUNÇÕES
+   //        ÁREA DEDICADA A FUNÇÕES
    //---------------------------------------
    // Tema 02: Escrita em Arquivos
+   /* As operações de escrita permitem adicionar dados em arquivos. Essa
+   adição se dá byte a byte a partir do endereço apontado pelo ponteiro
+   de escrita de um arquivo aberto. Existem duas categorias principais
+   de operações de escrita em arquivos: Simples e Formatada. */
+
+   // Escrita Simples em Arquivos
+   /* Função int fputc(int c, FILE* s):
+      - Permite escrever um único byte em um arquivo especificado.
+      - Parâmetro c: Representa o byte a ser gravado.
+      - Parâmetro s: Stream que indica em qual arquivo o byte deve ser
+      gravado.
+      - Em caso de sucesso, a função retorna o próprio byte escrito.
+      -> Opção via macro: int putc(int c, FILE* s)
+      -> Opção para o stream stdout: int putchar(int c) */
+   fputc('k', f);
+
+   /* Função int fputs(const char *str, FILE* s)
+      - Uma operação bastante conveniente é a escrita de strings, em vez
+      de escrever cada um de seus caracteres individualmente. A função
+      fputs() disponibiliza essa funcionalidade.
+      - Parâmetro str: Uma string a ser escrita.
+      - Parâmetro s: Stream que indica o arquivo onde a string será escrita.
+      - Retorna um valor positivo em caso de sucesso na escrita.
+      -> Opção para o stream stdout: int puts(const char *str) */
+   fputs("cachorro quente eh muito bom\n", f);
+
+   // Escrita Formatada em Arquivos
+   /* Função int fprintf(FILE* s, const char* f, ...)
+      - Permite a escrita de arquivos seguindo um padrão de formatação (o
+      mesmo do printf). A função possui N parâmetros.
+      - Parâmetro s: Stream que indica o arquivo que os dados devem ser
+      gravados.
+      - Parâmetro f: String determinando o formato de gravação (como no
+      printf).
+      - Parâmetros adicionais: Dados a serem inseridos nas posições previstas
+      do formato.
+      - Em caso de sucesso, a função retorna o número de bytes escritos no
+      formato.
+      -> Opção para string: int sprintf(char* str, const char* f, ...)
+      -> Opção para o stream stdout: int printf(const char* f, ...) */
+   char *cor = "roxo";
+   fprintf(f, "o ceu eh %s\n", cor);
+
+   // Tema 03: Leitura de Arquivos
+   /* Se a intenção de escrever em um arquivo é inserir dados nele, de forma
+   intuitiva podemos entender que ler de um arquivo é recuperar dados do
+   mesmo, utilizando um arquivo previamente aberto. Além disso, as operações
+   de leitura de arquivos são categorizadas em Leituras Simples e Formatadas. */
+
+   // Leituras Simples
+   /* Função int fgetc(FILE* s)
+      - Permite ler um único byte em um arquivo especificado.
+      - Parâmetro s: Stream que indica o arquivo que o byte deve ser lido.
+      - Em caso de sucesso, a função retorna o byte lido.
+      -> Opção via macro: int gect(FILE* s)
+      -> Opção para o stream stdin: int getchar() */
+   char c;
+   c = fgetc(f);
 
    
-
-
-
-
-
 
 
 
