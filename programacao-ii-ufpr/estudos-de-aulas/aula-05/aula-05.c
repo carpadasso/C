@@ -51,7 +51,7 @@ int main()
       - count: quantidade de blocos de dados a serem escritos.
       - stream: arquivo de destino dos blocos a serem escritos.
    Retorna a quantidade de blocos escritos com sucesso no arquivo. */
-   file = fopen("exemplo.bin", "wb");
+   file = fopen("exemplo01.bin", "wb");
    int struct_bloco2 = 1;
    fwrite(&struct_bloco2, sizeof(int), 1, file);
    fclose(file);
@@ -83,5 +83,24 @@ int main()
       - offset: tamanho do deslocamento, em número de bytes.
       - whence: parâmetro de para aplicação do deslocamento (SEEK_SET,
       SEEK_END, SEEK_CUR) */
+   file = fopen("exemplo02.bin", "wb");
+   fseek(file, 4, 1);
 
+   /* Função rewind()
+   Função específica para a movimentação do ponteiro para o início do arquivo
+   (prevê apenas o arquivo como parâmetro). */
+   rewind(file);
+
+   /* Função ftell()
+   Indica a posição corrente do ponteiro do arquivo recebido como parâmetro
+   (a partir do início). */
+   long int pos;
+   pos = ftell(file);
+   printf("Posiçao do ponteiro: %ld\n", pos);
+
+   //------------------------------------------------------
+   // Tema 04: Outras funções de manipulação de arquivos
+
+   /* Função int truncate(const char* path, off_t lenght)
+   As funções*/
 }
