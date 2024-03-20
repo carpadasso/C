@@ -120,9 +120,10 @@ int main()
       caractere de fim de linha (\n) é incluido na leitura de uma linha
       qualquer, esta lida do stream s e armazenada na string str (sendo c,
       s e str parâmetros da função). */
-   char *str1 = "";
-   fgets(str1, 21, f);
-
+   char *str1, *str2;
+   str2 = fgets(str1, 21, f);
+   printf("%s", str2);
+   
    // Leitura Formatada de Arquivos
    /* Função int fscanf(FILE* s, const char* f, ...)
       - Oferece a leitura de arquivos seguindo um padrão de formatação (o mesmo
