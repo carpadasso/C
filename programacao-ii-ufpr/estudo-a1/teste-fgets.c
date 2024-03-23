@@ -1,16 +1,16 @@
 #include <stdio.h>
+#include <string.h>
 
 int main()
 {
    FILE *file;
-   char str[50], *buff;
+   char str[50], *token;
 
-   file = fopen("arff.txt", "r");
+   file = fopen("teste.txt", "r");
 
-   buff = fgets(str, 51, file);
-
-   printf("String str: %s\n", str);
-   printf("String buff: %s\n", buff);
+   fgets(str, 51, file);
+   token = strtok(str, " ");
+   printf("O valor de token é: %s\n", token);
 
    fclose(file);
 
