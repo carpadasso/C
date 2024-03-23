@@ -26,32 +26,60 @@ void exibe_atributos(atributo *infos, int tamanho){
     printf("===============================\n");
 }
 
+/* Conta quantos atributos o arquivo possui.
+   Retorna a quantidade de atributos. */
 int conta_atributos(FILE *arff){
    // VOCE DEVE IMPLEMENTAR ESTA FUNCAO COMO PARTE DO A1!
    char line[1025], *token;
    int num_attr = 0;
 
-   fgets(line, 1026, arff);
+   fgets(line, 1025, arff);
    token = strtok(line, " ");
    while (strcmp(token, "@data")) {
-      num_attr++;
-      fgets(line, 1026, arff);
+      if (!strcmp(token, "@attribute"))
+         num_attr++;
+      fgets(line, 1025, arff);
       token = strtok(line, " ");
    }
+
+   rewind(arff); /* Traz o ponteiro de leitura para o início */
 
    return (num_attr);
 }
 
 atributo* processa_atributos(FILE *arff){
    // VOCE DEVE IMPLEMENTAR ESTA FUNCAO COMO PARTE DO A1!
-   int tam_infos;
+   int i, tam_infos;
+   char line[1025], *token;
    atributo *infos;
    
-   if (invalidoArff(arff))
-      return NULL;
-
    tam_infos = conta_atributos(arff);
-   
+   for (i = 0; i < tam_infos; i++) {
+      fgets(line, 1026, arff);
+
+      /* Remove o caractere de nova linha da string */
+      //line[strcspn(line, "\n")] = 0;
+
+      token = strtok(line, " "); /* Lê a string "@attribute" */
+
+      token = strtok(NULL, " "); /* Lê a string que contém o rótulo */
+
+      strcpy(infos[i].rotulo, token); /* Copia o rótulo para o rótulo do atributo */
+
+      token = strtok(NULL, " "); /* Lê a string que contém o tipo */
+      strcpy(infos[i].tipo, token); /* Copia o tipo para o tipo do atributo */
+
+      infos[i].categorias = NULL;
+      /* Caso a string do tipo seja categórica, passa o tipo para categoric */
+      if (strcmp(infos[i].tipo, "numeric") && strcmp(infos[i].tipo, "string")) {
+         strcpy(infos[i].categorias, infos[i].tipo);
+         strcpy(infos[i].tipo, "categoric");
+      }
+   }
+
+   rewind(arff); /* Traz o ponteiro de leitura para o início */
+
+   return infos;
 }
 
 int main(int argc, char **argv)
@@ -81,24 +109,20 @@ int main(int argc, char **argv)
 
    // VOCE DEVE IMPLEMENTAR AS ROTINAS NECESSARIAS E A CHAMADA DE FUNCOES PARA PROCESSAR OS ATRIBUTOS ARFF AQUI
    FILE *file = fopen(entrada, "r");
-   atributo *infos;
 
-   if (!file) return (1);
+   if (!file) exit(3);
 
-   /*
    atributo *infos;
    infos = processa_atributos(file);
-   if (!infos) return (1);
-   */
-  
+   if (!infos) exit(4);
+
    int tam_infos;
    tam_infos = conta_atributos(file);
-   printf("Numero de atributos: %d\n", tam_infos);
 
    if (exibicao){
    // VOCE DEVE CHAMAR A FUNCAO DE EXIBICAO AQUI (USE A FUNCAO exibe_atributos)
       exibe_atributos(infos, tam_infos);
    }
 
-  return (0);
+   return (0);
 }
