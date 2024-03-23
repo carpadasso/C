@@ -50,7 +50,7 @@ int conta_atributos(FILE *arff){
 atributo* processa_atributos(FILE *arff){
    // VOCE DEVE IMPLEMENTAR ESTA FUNCAO COMO PARTE DO A1!
    int i, tam_infos;
-   char line[1025], *token;
+   char line[1025];
    atributo *infos;
    
    tam_infos = conta_atributos(arff);
@@ -58,16 +58,13 @@ atributo* processa_atributos(FILE *arff){
       fgets(line, 1026, arff);
 
       /* Remove o caractere de nova linha da string */
-      //line[strcspn(line, "\n")] = 0;
+      line[strcspn(line, "\n")] = 0;
 
-      token = strtok(line, " "); /* Lê a string "@attribute" */
+      strtok(line, " "); /* Lê a string "@attribute" */
 
-      token = strtok(NULL, " "); /* Lê a string que contém o rótulo */
+      infos[i].rotulo = strtok(NULL, " "); /* Lê a string que contém o rótulo */
 
-      strcpy(infos[i].rotulo, token); /* Copia o rótulo para o rótulo do atributo */
-
-      token = strtok(NULL, " "); /* Lê a string que contém o tipo */
-      strcpy(infos[i].tipo, token); /* Copia o tipo para o tipo do atributo */
+      infos[i].tipo = strtok(NULL, " "); /* Lê a string que contém o tipo */
 
       infos[i].categorias = NULL;
       /* Caso a string do tipo seja categórica, passa o tipo para categoric */
@@ -118,11 +115,14 @@ int main(int argc, char **argv)
 
    int tam_infos;
    tam_infos = conta_atributos(file);
+   printf("Atributos: %d\n", tam_infos);
 
    if (exibicao){
-   // VOCE DEVE CHAMAR A FUNCAO DE EXIBICAO AQUI (USE A FUNCAO exibe_atributos)
+      // VOCE DEVE CHAMAR A FUNCAO DE EXIBICAO AQUI (USE A FUNCAO exibe_atributos)
       exibe_atributos(infos, tam_infos);
    }
+
+   fclose(file);
 
    return (0);
 }
