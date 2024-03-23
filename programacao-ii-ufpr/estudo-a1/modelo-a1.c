@@ -54,6 +54,7 @@ atributo* processa_atributos(FILE *arff){
    atributo *infos;
    
    tam_infos = conta_atributos(arff);
+   infos = (atributo*) malloc(tam_infos * sizeof(atributo));
    for (i = 0; i < tam_infos; i++) {
       fgets(line, 1026, arff);
 
@@ -62,11 +63,11 @@ atributo* processa_atributos(FILE *arff){
 
       strtok(line, " "); /* Lê a string "@attribute" */
 
-      infos[i].rotulo = strtok(NULL, " "); /* Lê a string que contém o rótulo */
+      (infos[i]).rotulo = strtok(NULL, " "); /* Lê a string que contém o rótulo */
 
-      infos[i].tipo = strtok(NULL, " "); /* Lê a string que contém o tipo */
+      (infos[i]).tipo = strtok(NULL, " "); /* Lê a string que contém o tipo */
 
-      infos[i].categorias = NULL;
+      (infos[i]).categorias = NULL;
       /* Caso a string do tipo seja categórica, passa o tipo para categoric */
       if (strcmp(infos[i].tipo, "numeric") && strcmp(infos[i].tipo, "string")) {
          strcpy(infos[i].categorias, infos[i].tipo);
@@ -122,6 +123,7 @@ int main(int argc, char **argv)
       exibe_atributos(infos, tam_infos);
    }
 
+   free(infos);
    fclose(file);
 
    return (0);
