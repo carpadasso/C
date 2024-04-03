@@ -24,12 +24,23 @@ int valorMinimo(ArvBin tree)
 {  
    int valEsq, valDir, valRaiz;
 
-   if (arvVazia(tree)) return 0;
+   if (tree == NULL) return 0;
 
    valEsq = valorMinimo(tree->esq);
    valDir = valorMinimo(tree->dir);
    valRaiz = tree->item;
 
+   if (valEsq == 0 && valDir != 0)
+      if (valDir < valRaiz) return valDir;
+      else return valRaiz;
+   
+   if (valEsq != 0 && valDir == 0)
+      if (valEsq < valRaiz) return valEsq;
+      else return valRaiz;
+   
+   if (valEsq == 0 && valDir == 0)
+      return valRaiz;
+   
    if (valEsq < valDir) {
       if (valEsq < valRaiz) return valEsq;
       else return valRaiz;
