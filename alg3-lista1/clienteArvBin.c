@@ -132,6 +132,6 @@ int main(int argc, char *argv[]){
   escreveArv( raiz );
   --------------------------------------------- */
 
-  free( arv );
-  return (0);
+  freeArv( arv );
+  return 0;
 }
