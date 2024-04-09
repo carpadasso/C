@@ -59,6 +59,44 @@ void percursoArv(ArvBin tree)
    printf("%d ", tree->item); 
 }
 
+void paiMaior(ArvBin arv)
+{
+   int itemE, itemD;
+   if (arv == NULL) return;
+
+   if (arv->esq == NULL && arv->dir != NULL)
+      arv->item = arv->dir->item;
+   
+   if (arv->esq != NULL && arv->dir == NULL)
+      arv->item = arv->esq->item;
+   
+   if (arv->esq == NULL && arv->dir == NULL) return;
+
+   itemE = arv->esq->item;
+   itemD = arv->dir->item;
+   if (itemE > itemD) arv->item = itemE;
+   else arv->item = itemD;
+
+   paiMaior(arv->esq);
+   paiMaior(arv->dir);
+}
+
+void printnode(char c, int val, int h)
+{
+   int i;
+   for (i = 0; i < h; i++) printf("\t");
+   if (val != 0) printf("%d\n", val);
+   else printf("%c\n", c);
+}
+
+void show(ArvBin arv, int h)
+{
+   if (arv == NULL) { printnode('*', 0, h); return; }
+   show(arv->dir, h + 1);
+   printnode('0', arv->item, h);
+   show(arv->esq, h + 1);
+}
+
 /* ----------------------------------------------------- */
 /* Programa: cria uma árvore binária e imprime a árvore
 */
@@ -80,13 +118,10 @@ int main(int argc, char *argv[]){
 
   printf("%d\n", valorMinimo(arv));
   
-  printf("Percurso pre-ordem: ");
-  percursoArv(arv);
-  printf("\n");
-  /*----   chamada das funcoes da lista ----
-  ... paiMaior(...)
-  escreveArv( arv );
+  paiMaior(arv);
+  show(arv, alturaArv(arv));
 
+  /*----   chamada das funcoes da lista ----
   ... maiorNaRaiz(...)
   escreveArv( raiz );
 
