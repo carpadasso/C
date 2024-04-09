@@ -86,6 +86,6 @@ int main(int argc, char *argv[]){
   escreveArv( raiz );
   --------------------------------------------- */
 
-  free( arv );
+  freeArv( arv );
   return 0;
 }
