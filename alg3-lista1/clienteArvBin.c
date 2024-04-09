@@ -51,6 +51,14 @@ int valorMinimo(ArvBin tree)
    }
 }
 
+void percursoArv(ArvBin tree)
+{
+   if (tree == NULL) return;
+   percursoArv(tree->esq);
+   percursoArv(tree->dir);
+   printf("%d ", tree->item); 
+}
+
 /* ----------------------------------------------------- */
 /* Programa: cria uma árvore binária e imprime a árvore
 */
@@ -71,8 +79,11 @@ int main(int argc, char *argv[]){
   printf("%d\n", somaChave(arv));
 
   printf("%d\n", valorMinimo(arv));
-
-/*----   chamada das funcoes da lista ----
+  
+  printf("Percurso pre-ordem: ");
+  percursoArv(arv);
+  printf("\n");
+  /*----   chamada das funcoes da lista ----
   ... paiMaior(...)
   escreveArv( arv );
 
