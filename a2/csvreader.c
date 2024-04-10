@@ -33,7 +33,7 @@ int main(int argc, char** argv)
             sumario(aqv);
             break;
          case 2:
-            printf("Mostrar somente\n");
+            mostrar(aqv);
             break;
          case 3:
             break;
