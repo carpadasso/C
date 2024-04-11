@@ -21,10 +21,21 @@ int main(int argc, char** argv)
       exit(2);
    }
 
+   if (!verificaArquivo(aqv)){
+      fclose(aqv);
+      fprintf(stderr, "Arquivo com erros de formatação!\n");
+      exit(3);
+   }
+
    while (1) {
-      printf("1) Sumario do Arquivo\n2) Mostrar\n3) Filtros\n");
-      printf("4) Descricao dos Dados\n5) Ordenacao\n6) Selecao\n");
-      printf("7) Dados Faltantes\n8) Salvar Dados\n9) Fim\n");
+      printf("1) Sumario do Arquivo\n"
+             "2) Mostrar\n"
+             "3) Filtros\n"
+             "4) Descricao dos Dados\n"
+             "5) Ordenacao\n6) Selecao\n"
+             "7) Dados Faltantes\n"
+             "8) Salvar Dados\n"
+             "9) Fim\n");
       printf("Escolha a opcao: ");
       scanf("%d", &opt);
       printf("\n");
@@ -53,8 +64,8 @@ int main(int argc, char** argv)
          default:
             printf("Opcao invalida! Tente novamente.\n");
       }
-      printf("Pressione ENTER para continuar\n");
-      fflush(stdin);
+      printf("\nPressione ENTER para continuar\n");
+      setbuf(stdin, NULL);
       while (getchar() != '\n') ;
    }
 }

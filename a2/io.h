@@ -21,6 +21,7 @@ typedef struct {
 /* ------------------------------
  *     Funções 
  ----------------------------*/
+int verificaArquivo(FILE* aqv);
 void sumario(FILE* aqv);
 void mostrar(FILE* aqv);
 #endif  
