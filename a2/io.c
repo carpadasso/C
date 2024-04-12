@@ -163,9 +163,15 @@ int contaColunas(FILE* aqv)
 int contaLinhas(FILE* aqv)
 {
    int numLin = 0;
-   char buffer[MAX_BUF];
+   char c;
+   
+   c = fgetc(aqv);
+   while (c != EOF){
+      if (c == '\n') numLin++;
+      c = fgetc(aqv);
+   }
+   numLin++;
 
-   while (!feof(aqv)){ numLin++; fgets(buffer, MAX_BUF, aqv); }
    fseek(aqv, 0, SEEK_SET);
    return (numLin - 1);
 }
@@ -177,7 +183,7 @@ linha* geraTabela(FILE* aqv)
    char buffer[MAX_BUF], *substr;
 
    numLins = contaLinhas(aqv);
-   tabela = (linha*) malloc (numLins * sizeof(linha));
+   tabela = (linha*) malloc ((numLins + 1) * sizeof(linha));
    if (tabela == NULL) return NULL;
 
    indice = 0;
@@ -187,7 +193,8 @@ linha* geraTabela(FILE* aqv)
       tabela[indice].indOrig = indice;
       indice++;
    }
-
+   
+   fseek(aqv, 0, SEEK_SET);
    return (tabela);
 }
 
@@ -251,9 +258,9 @@ aqvCSV* criaAqvCSV(FILE* aqv){
 
 void destroiAqvCSV(aqvCSV* csv)
 {
-   free(csv);
    if (csv->tabela) free(csv->tabela);
    if (csv->arrVar) free(csv->arrVar);
+   free(csv);
 }
 
 /*------------------------------
@@ -400,7 +407,7 @@ int compDiferente(char* var, int valor){
    return (1);
 }
 
-int filtros(FILE* aqv, int (*filt) (char*, int), int valor)
+int filtros(aqvCSV* csv, int (*filt) (char*, int), int valor)
 {
    return (1);
 }
