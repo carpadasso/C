@@ -26,6 +26,7 @@ int main(int argc, char** argv)
       fprintf(stderr, "Arquivo com erros de formatação!\n");
       exit(3);
    }
+   free(nome_arquivo);
 
    while (1) {
       printf("1) Sumario do Arquivo\n"
