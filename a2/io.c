@@ -12,6 +12,14 @@
 
 /* Defines necessários */
 #define MAX_BUF 1024
+#define SUM 0  /* Sumário */
+#define MST 1  /* Mostrar */
+#define FLT 2  /* Filtros */
+#define DSC 3  /* Descrição */
+#define ORD 4  /* Ordenação */
+#define SEL 5  /* Seleção */
+#define FAL 6  /* Dados Faltantes */
+#define SAL 7  /* Salva Dados */
 
 /* Tipos de dados */
 typedef struct {
@@ -81,6 +89,8 @@ int imprimeLinha(aqvCSV* csv, int ind, int tamMax)
       if (substr == NULL) printf("%*s ", tamMax, "NaN");
       else printf("%*s ", tamMax, substr);
    }
+
+   return (1);
 }
 
 /*------------------------------
