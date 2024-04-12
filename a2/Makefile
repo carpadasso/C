@@ -3,13 +3,13 @@
 all: csvreader
 
 csvreader: csvreader.o io.o
-	gcc -Wall -Wextra csvreader.o io.o -o csvreader
+	gcc -Wall -Wextra csvreader.o io.o -o csvreader -g
 
 csvreader.o: csvreader.c
-	gcc -Wall -Wextra csvreader.c io.c -o csvreader.o
+	gcc -Wall -Wextra -c csvreader.c
 
 io.o: io.c
-	gcc -Wall -Wextra io.c -o io.o
+	gcc -Wall -Wextra -c io.c
 
 clean:
 	rm -rf *.o *~ csvreader
