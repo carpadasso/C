@@ -117,8 +117,8 @@ variavel* geraVariaveis(FILE* aqv)
       substituiVirgulas(buffer);
       for (int j = 0; j < numCols; j++){
          substr = separaString(buffer, j);
-         if (atof(substr)) arrVar[j].tipo = NUMERIC;
-         if (strlen(substr) > arrVar[j].maxLen)
+         if (substr != NULL && atof(substr)) arrVar[j].tipo = NUMERIC;
+         if (substr != NULL && strlen(substr) > arrVar[j].maxLen)
             arrVar[j].maxLen = strlen(substr);
       }
    }
