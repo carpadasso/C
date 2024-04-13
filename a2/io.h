@@ -42,6 +42,8 @@ typedef struct {
    linha* tabela;
    int numCols;
    int numLins;
+   int* printLins;
+   int* printCols;
    variavel* arrVar;
 } aqvCSV;
 
@@ -70,13 +72,13 @@ int sumario(aqvCSV* csv);
 
 int mostrar(aqvCSV* csv);
 
-int filtros(aqvCSV* csv, int (*filt) (char* var, int valor), int valor);
-int compIgual(char* var, int valor);
-int compMaior(char* var, int valor);
-int compMaiorIgual(char* var, int valor);
-int compMenor(char* var, int valor);
-int compMenorIgual(char* var, int valor);
-int compDiferente(char* var, int valor);
+int filtros(aqvCSV* csv, int (*filt) (char* s1, char* s2), char* var, char* valor);
+int compIgual(char* s1, char* s2);
+int compMaior(char* s1, char* s2);
+int compMaiorIgual(char* s1, char* s2);
+int compMenor(char* s1, char* s2);
+int compMenorIgual(char* s1, char* s2);
+int compDiferente(char* s1, char* s2);
 
 int descricaoDados(aqvCSV* csv, char* var);
 

@@ -3,29 +3,31 @@
 #include <string.h>
 #include "io.h"
 
+#define MAX_BUF 1024
+
 int main(int argc, char** argv)
 {
    aqvCSV* csv;
    FILE *aqv;
 
-   int opt, escolha, op, valor;
-   char c, *nomeAqv, *var, *comparador;
+   int opt, escolha, op;
+   char c, *filename, nomeAqv[MAX_BUF], var[MAX_BUF], valor[MAX_BUF], comparador[MAX_BUF];
    
-   int (*filt) (char *str, int val);
+   int (*filt) (char *s1, char* s2);
 
    if (argc != 2) {
       fprintf(stderr, "Uso do programa: ./csvreader <arquivo.csv>\n");
       exit(1);
    }
 
-   nomeAqv = strdup(argv[1]);
-   aqv = fopen(nomeAqv, "r");
+   filename = strdup(argv[1]);
+   aqv = fopen(filename, "r");
    if (aqv == NULL) {
       fprintf(stderr, "Erro ao abrir o arquivo.\n");
       exit(2);
    }
-   free(nomeAqv);
-   
+   free(filename);
+
    csv = criaAqvCSV(aqv);
    if (csv == NULL){
       fprintf(stderr, "Impossível gerar dados do arquivo.\n");
@@ -37,6 +39,8 @@ int main(int argc, char** argv)
       fprintf(stderr, "Arquivo com erros de formatação!\n");
       exit(3);
    }
+   
+   printf("Carregando...\n\n");
 
    while (1) {
       printf("1) Sumario do Arquivo\n"
@@ -64,18 +68,11 @@ int main(int argc, char** argv)
          case 3:
             /* Opção 3 - Filtros*/
             printf("Entre com a variavel: ");
-            scanf("%[^\n]", var);
-            getchar();
+            scanf("%s", var);
 
             printf("Escolha um filtro ( == > >= < <= != ): ");
-            scanf("%[^\n]", comparador);
-            getchar();
+            scanf("%s", comparador);
             
-            if (comparador == NULL){
-               printf("Filtro nao selecionado.\n");
-               break;
-            }
-
             if (!strcmp(comparador, "==")) filt = compIgual;
             else if (!strcmp(comparador, ">")) filt = compMaior;
             else if (!strcmp(comparador, ">=")) filt = compMaiorIgual;
@@ -88,9 +85,9 @@ int main(int argc, char** argv)
             }
 
             printf("Digite um valor: ");
-            scanf("%d", &valor);
+            scanf("%s", valor);
             
-            if (!filtros(csv, filt, valor)){
+            if (!filtros(csv, filt, var, valor)){
                printf("Nao foi possivel aplicar o filtro desejado.\n");
                break;
             }
@@ -99,8 +96,7 @@ int main(int argc, char** argv)
          case 4:
             /* Opção 4 - Descrição de Dados */
             printf("Entre com a variavel: ");
-            scanf("%[^\n]", var);
-            getchar();
+            scanf("%s", var);
 
             if (!descricaoDados(csv, var))
                printf("Erro ao realizar a descricao da variavel.\n");
@@ -109,14 +105,16 @@ int main(int argc, char** argv)
          case 5:
             /* Opção 5 - Ordenação */
             printf("Entre com a variavel: ");
-            scanf("%[^\n]", var);
-            getchar();
+            scanf("%s", var);
+            
+            fflush(stdin);
 
             printf("Selecione uma opcao [A]scendente ou [D]escendente: ");
-            do {
-               c = getchar();
-               if (c != 'A' && c != 'D') printf("Opcao errada, tente novamente: ");
-            } while (c != 'A' && c != 'D');
+            scanf("%c", &c);
+            if (c != 'A' && c != 'D'){
+               printf("Opcao invalida.\n");
+               break;
+            }
 
             if (c == 'A') op = 0;
             else if (c == 'D') op = 1;
@@ -125,13 +123,15 @@ int main(int argc, char** argv)
                printf("Erro ao executar a ordenacao no arquivo.\n");
                break;
             }
-
+            
+            fflush(stdin);
             printf("Deseja gravar um arquivo com os dados ordenados? [S|N] ");
-            do {
-               c = getchar();
-               if (c != 'N' && c != 'S') printf("Opcao errada, tente novamente: ");
-            } while (c != 'N' && c != 'S');
-
+            scanf("%c", &c);
+            if (c != 'N' && c != 'S'){
+               printf("Opcao invalida.\n");
+               break;
+            }
+            
             if (c == 'S'){
                printf("Entre com o nome do arquivo: ");
                scanf("%[^\n]", nomeAqv);
@@ -228,7 +228,7 @@ int main(int argc, char** argv)
             break;
          case 8:
             printf("Entre com o nome do arquivo: ");
-            scanf("%[^\n]", nomeAqv);
+            scanf("%s", nomeAqv);
             getchar();
 
             if (!salvaDados(csv, nomeAqv))
