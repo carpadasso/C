@@ -52,6 +52,7 @@ int main(int argc, char** argv)
              "8) Salvar Dados\n"
              "9) Fim\n");
       printf("Escolha a opcao: ");
+      setbuf(stdin, NULL);
       scanf("%d", &opt);
       printf("\n");
       switch (opt) {
@@ -152,6 +153,7 @@ int main(int argc, char** argv)
 
             break;
          case 6:
+            /* --------------------------------- */
             /* Opção 6 - Seleção */
             printf("Entre com a(s) variavel(is) que deseja selecionar (separadas por espaco): ");
             scanf("%[^\n]", var);
@@ -179,6 +181,7 @@ int main(int argc, char** argv)
             }
 
             break;
+            /* ------------------------------------ */
          case 7:
             /* Opção 7 - Dados Faltantes */
             printf("1) Listar registros com NaN\n"
@@ -245,6 +248,7 @@ int main(int argc, char** argv)
          default:
             printf("Opcao invalida! Tente novamente.\n");
       }
+      
       printf("\nPressione ENTER para continuar\n");
       setbuf(stdin, NULL);
       while (getchar() != '\n') ;
