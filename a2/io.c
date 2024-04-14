@@ -1077,7 +1077,7 @@ int salvaDados(aqvCSV* csv, char* nomeAqv)
 /*------------------------------
       TESTE DA BIBLIOTECA
  ------------------------------*/
-
+/*
 int main()
 {
    FILE* arqT;
@@ -1092,9 +1092,9 @@ int main()
 
    filtros(csv, compIgual, "Idade", "32.0");
    printf("\n");
-   //char teste[MAX_BUF] = "Idade Profissao";
-   //selecionaDados(csv, teste);
+   char teste[MAX_BUF] = "Idade Profissao\0";
+   selecionaDados(csv, teste);
    dadosFaltantes(csv, 1);
 
    return (0);
-}
+}*/
