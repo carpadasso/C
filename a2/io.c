@@ -850,10 +850,6 @@ void descricaoNum(aqvCSV* csv, int indVar)
          maior = qntAparece[i];
          moda = i;
       }
-   
-   printf("Valores modais: ");
-   for (i = 0; i < contadorUnicos; i++) printf("%d ", qntAparece[i]);
-   printf("\n");
 
    printf("Contador: %d\n", contador);
    printf("Media: %.1f\n", media);
@@ -1008,17 +1004,18 @@ int selecionaDados(aqvCSV* csv, char* var)
       printf("%c", var[i]);
    
    contaVar = 1;
-   strcpy(buffer, var);
-   for (i = 0; i < strlen(buffer); i++)
-      if (var[i] == '\n'){ 
-         var[i] = '\0';
-         contaVar++;
-      }
+   for (i = 0; i < strlen(var); i++)
+      if (var[i] == ' ') contaVar++;
+
+   printf("Qntd. variaveis: %d\n", contaVar);
    
    /* Verifica se todas as variáveis dadas estão no arquivo
-    * Além disso, guarda os índices das colunas das variáveis */
+    * Além disso, guarda os índices das colunas das variáveis
    achouVar = 0;
    for (i = 0; i < contaVar; i++){
+      for (j = 0; var[j] != ' ' && j < strlen(var); j++)
+         buffer[i] = var[i];
+      buffer[i] = '\0';
       substr = separaString(var, i);
       for (j = 0; j < csv->numCols; i++){
          if (substr != NULL)
@@ -1029,10 +1026,10 @@ int selecionaDados(aqvCSV* csv, char* var)
       }
    }
    printf("\n");
-   if (achouVar != contaVar) return (0);
+   if (achouVar != contaVar) return (0);*/
    
    /* Imprime as informações */
-   imprimeArquivo(csv);
+   //imprimeArquivo(csv);
 
    return (1);
 }
@@ -1093,6 +1090,8 @@ int salvaDados(aqvCSV* csv, char* nomeAqv)
    FILE* aqvNovo;
    int i;
 
+   if (csv == NULL || nomeAqv == NULL) return (0);
+
    aqvNovo = fopen(nomeAqv, "w");
    if (aqvNovo == NULL) return (0);
    
@@ -1122,7 +1121,7 @@ int main()
 
    filtros(csv, compMenor, "Idade", "32.0");
 
-   char* novoAqv = "pancada.csv";
+   char* novoAqv = "aqvIncrivel.csv";
    gravaCSV(csv, novoAqv);
 
    return (0);

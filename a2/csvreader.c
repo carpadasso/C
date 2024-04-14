@@ -230,8 +230,8 @@ int main(int argc, char** argv)
             /* --------------------------------- */
             /* Opção 6 - Seleção */
             printf("Entre com a(s) variavel(is) que deseja selecionar (separadas por espaco): ");
-            scanf("%s", var);
-            fflush(stdin);
+            scanf("%[^\n]", var);
+            getchar();
 
             if (!selecionaDados(csv, var))
                printf("Nao foi possivel selecionar os dados desejados.\n");
