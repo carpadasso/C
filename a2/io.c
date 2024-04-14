@@ -13,6 +13,7 @@
 
 /* Defines necessários */
 #define MAX_BUF 1024
+#define _CRT_SECURE_NO_DEPRECATE
 
 /* Tipos de dados */
 typedef struct {
@@ -23,6 +24,12 @@ typedef struct {
 /*------------------------------
       FUNÇÕES DE USO GERAL
  ------------------------------*/
+int maior(int a, int b)
+{
+   if (a > b) return (a);
+   return (b);
+}
+
 /* Verifica se o índice ind está no vetor de inteiro intVet de tamanho tam. 
  * Retorna 1 se está presente, ou 0 caso contrário. */
 int indiceNoVet(int ind, int *intVet, int tam)
@@ -91,6 +98,8 @@ int colunasNaLinha(char* linha)
 int achaVariavel(aqvCSV* csv, char* var)
 {
    int i;
+   
+   if (csv == NULL || var == NULL) return (-1);
 
    for (i = 0; i < csv->numCols; i++)
       if (!strcmp(var, csv->arrVar[i].nome)) return (i);
@@ -217,57 +226,63 @@ void imprimeArquivo(aqvCSV* csv)
       if (csv->printLins[lin] == 1) qntdLinhas++;
    
    qntdColunas = 0;
-   for (col = 1; col < csv->numCols; col++)
+   for (col = 0; col < csv->numCols; col++)
       if (csv->printCols[col] == 1) qntdColunas++;
 
    if (qntdLinhas == 0 || qntdColunas == 0) return;  /* Não há linhas para imprimir */
    
    indiceMaximo = 0;
-   for (lin = 0; lin < csv->numLins; lin++)
+   for (lin = 1; lin < csv->numLins; lin++)
          if (csv->printLins[lin] == 1) indiceMaximo = lin;
    
    /* Calcula o Valor Máximo de Caracteres para Imprimir */
    tamMaximo = (int*) malloc (csv->numCols * sizeof(int));
+   if (tamMaximo == NULL) return;
+
    strcpy(buffer, csv->tabela[0].lin);
    substituiVirgulas(buffer);
    for (col = 0; col < csv->numCols; col++){
       substr = separaString(buffer, col);
-      if (substr != NULL) tamMaximo[col] = strlen(substr);
-   }
-   for (lin = 1; lin < csv->numLins; lin++){
-      if (csv->printLins[lin] == 1){
-         strcpy(buffer, csv->tabela[lin].lin);
-         substituiVirgulas(buffer);
-         for (col = 0; col < csv->numCols; col++){
-            substr = separaString(buffer, col);
-            if (substr != NULL && strlen(substr) > tamMaximo[col]) tamMaximo[col] = strlen(substr);
-         }
-      }
+      if (substr != NULL) tamMaximo[col] = strlen(substr); /* Coloca o tamanho das variáveis no tamMaximo */
    }
 
    printf("Indice maximo = %d\n", indiceMaximo);
 
-   /* Impressão do Cabeçalho do Arquivo */
-   strcpy(buffer, csv->tabela[0].lin);
-   substituiVirgulas(buffer);
-   for (i = 0; i < digitos(indiceMaximo) + 1; i++)
-      printf(" "); 
-   for (col = 0; col < csv->numCols; col++)
-      if (csv->printCols[col] == 1){
-         substituiVirgulas(buffer);
-         substr = separaString(buffer, col);
-
-         if (substr == NULL)
-            printf("%*s ", tamMaximo[col], "NaN");
-         else
-            printf("%*s ", tamMaximo[col], substr);
+   if (qntdLinhas <= 11){
+      /* Calcula o tamanho de impressão dos valores */
+      for (lin = 1; lin < csv->numLins + 1; lin++){
+         if (csv->printLins[lin] == 1){
+            strcpy(buffer, csv->tabela[lin].lin);
+            substituiVirgulas(buffer);
+            for (col = 0; col < csv->numCols; col++){
+               substr = separaString(buffer, col);
+               if (substr == NULL && tamMaximo[col] < 3) tamMaximo[col] = 3;
+               if (substr != NULL && strlen(substr) > tamMaximo[col]) tamMaximo[col] = strlen(substr);
+            }
+         }
       }
-   printf("\n");
-   if (qntdLinhas <= 11){ 
+
+      /* Impressão do Cabeçalho do Arquivo */
+      strcpy(buffer, csv->tabela[0].lin);
+      substituiVirgulas(buffer);
+      for (i = 0; i < digitos(indiceMaximo - 1) + 1; i++)
+         printf(" "); 
+      for (col = 0; col < csv->numCols; col++)
+         if (csv->printCols[col] == 1){
+            substituiVirgulas(buffer);
+            substr = separaString(buffer, col);
+
+            if (substr == NULL)
+               printf("%*s ", tamMaximo[col], "NaN");
+            else
+               printf("%*s ", tamMaximo[col], substr);
+         }
+      printf("\n");
+
       /* Impressão do Conteúdo do Arquivo */
       for (lin = 1; lin < csv->numLins; lin++){
          if (csv->printLins[lin] == 1){
-            printf("%*d ", digitos(indiceMaximo - 1), lin - 1); /* Imprime o índice da linha */
+            printf("%-*d ", digitos(indiceMaximo - 1), lin - 1); /* Imprime o índice da linha */
 
             strcpy(buffer, csv->tabela[lin].lin);
             substituiVirgulas(buffer);
@@ -288,6 +303,7 @@ void imprimeArquivo(aqvCSV* csv)
    else {
       guardaLinha = (int*) malloc (10 * sizeof(int));
       if (guardaLinha == NULL) { free(tamMaximo); return; }
+
       contador = 0;
       /* Pega o índice das primeiras cinco linhas */
       for (lin = 1; lin < csv->numLins && contador < 5; lin++){
@@ -298,36 +314,50 @@ void imprimeArquivo(aqvCSV* csv)
       }
       /* Pega o índice das últimas cinco linhas */
       contador = 0;
-      for (lin = csv->numLins - 2; lin >= 0 && contador < 5; lin--){
+      for (lin = csv->numLins - 1; lin > 0 && contador < 5; lin--){
          if (csv->printLins[lin] == 1){
             guardaLinha[9 - contador] = lin;
             contador++;
          }
       }
-      for (i = 0; i < 10; i++)
-         printf("%d ", guardaLinha[i]);
-      printf("\n");
       
       /* Calcula o valor máximo de caracteres para as linhas */
-      for (lin = 0; lin < csv->numLins; lin++)
-         for (i = 0; i < 10; i++)
-            if (lin == guardaLinha[i]){
-               strcpy(buffer, csv->tabela[lin].lin);
-               substituiVirgulas(buffer);
-               for (col = 0; col < csv->numCols; col++){
-                   tamMaximo[col] = 3;
-                   substr = separaString(buffer, col);
-                   if (substr != NULL && strlen(substr) > tamMaximo[col])
-                      tamMaximo[col] = strlen(substr); 
-               }
-            }            
+      for (i = 0; i < 10; i++){
+         lin = guardaLinha[i];
+         strcpy(buffer, csv->tabela[lin].lin);
+         substituiVirgulas(buffer);
+         for (col = 0; col < csv->numCols; col++){
+            substr = separaString(buffer, col);
+            if (substr != NULL && strlen(substr) > tamMaximo[col])
+               tamMaximo[col] = maior(strlen(substr), tamMaximo[col]);
+            if (tamMaximo[col] < 3) tamMaximo[col] = 3;
+         }    
+      }
+
       indiceMaximo = guardaLinha[9];
-      if (indiceMaximo < 3) indiceMaximo = 3; /* Cuidado com '...' */
+     
+      /* Impressão do Cabeçalho do Arquivo */
+      strcpy(buffer, csv->tabela[0].lin);
+      substituiVirgulas(buffer);
+      for (i = 0; i < maior(digitos(indiceMaximo - 1), 3) + 1; i++)
+         printf(" "); 
+
+      for (col = 0; col < csv->numCols; col++)
+         if (csv->printCols[col] == 1){
+            substituiVirgulas(buffer);
+            substr = separaString(buffer, col);
+
+            if (substr == NULL)
+               printf("%*s ", tamMaximo[col], "NaN");
+            else
+               printf("%*s ", tamMaximo[col], substr);
+         }
+      printf("\n");
 
       /* Imprime as cinco primeiras linhas */
       for (i = 0; i < 5; i++){
          lin = guardaLinha[i];
-         printf("%*d ", digitos(indiceMaximo), lin);
+         printf("%-*d ", maior(digitos(indiceMaximo - 1), 3), lin - 1);
          strcpy(buffer, csv->tabela[lin].lin);
          substituiVirgulas(buffer);
 
@@ -344,15 +374,16 @@ void imprimeArquivo(aqvCSV* csv)
       }
       
       /* Imprime as reticências */
-      printf("%*s ", indiceMaximo, "...");
+      printf("%-*s ", maior(digitos(indiceMaximo - 1), 3), "...");
       for (col = 0; col < csv->numCols; col++)
-         printf("%*s ", tamMaximo[col], "...");
+         if (csv->printCols[col] == 1)
+            printf("%*s ", tamMaximo[col], "...");
       printf("\n");
 
       /* Imprime as últimas cinco linhas */
       for (i = 5; i < 10; i++){
          lin = guardaLinha[i];
-         printf("%*d ", digitos(indiceMaximo), lin);
+         printf("%-*d ", maior(digitos(indiceMaximo - 1), 3), lin - 1);
          strcpy(buffer, csv->tabela[lin].lin);
          substituiVirgulas(buffer);
 
@@ -370,7 +401,7 @@ void imprimeArquivo(aqvCSV* csv)
       free(guardaLinha);
    }
    
-   printf("[%d rows x %d columns]\n", qntdLinhas, qntdColunas);
+   printf("\n[%d rows x %d columns]\n", qntdLinhas, qntdColunas);
    free(tamMaximo);
 }
 
@@ -481,87 +512,21 @@ int sumario(aqvCSV* csv)
  ------------------------------*/
 int mostrar(aqvCSV* csv)
 {
-   int i, j, k, tamMaximo;
-   char buffer[MAX_BUF], *substr;
-
-   /* Impressão cabeçalho */
-   fgets(buffer, MAX_BUF, csv->aqv);
-   substituiVirgulas(buffer);
-   if (csv->numLins > 11){
-      tamMaximo = 3;
-      if (digitos(csv->numLins) > tamMaximo) tamMaximo = digitos(csv->numLins);
-      printf("%*s ", tamMaximo, " ");
-   }
-   else printf("  ");
+   int i;
+   
+   if (csv == NULL) return (0);
+   
+   /* Prepara os vetores de impressão para
+    * a função mostrar() */
+   for (i = 0; i < csv->numLins; i++)
+      csv->printLins[i] = 1;
    for (i = 0; i < csv->numCols; i++)
-         printf("%*s ", csv->arrVar[i].maxLen, separaString(buffer, i));
-   printf("\n");
+      csv->printCols[i] = 1;
+   csv->printCols[2] = 0;
+   csv->printCols[3] = 0;
 
-   /* Impressão conteúdo */
-   if (csv->numLins <= 11) {  
-      /* Impressão sem cortes de linhas */
-      for (i = 0; i < csv->numLins - 1; i++){
-         printf("%d ", i);
-         fgets(buffer, MAX_BUF, csv->aqv);
-         substituiVirgulas(buffer);
-         for (j = 0; j < csv->numCols; j++){
-            substr = separaString(buffer, j);
-            tamMaximo = csv->arrVar[j].maxLen;
-            (substr == NULL) ? printf("%*s ", tamMaximo, "NaN") : printf("%*s ", tamMaximo, substr);
-         }
-         printf("\n");
-      }
-   }
-   else {
-      /* Impressão com cortes de linhas*/
-      /* Impressão das cinco primeira linhas */
-      for (i = 0; i < 5; i++){
-         tamMaximo = 3;                                                             /* A string "..." possui três dígitos */
-         if (digitos(csv->numLins) > tamMaximo) tamMaximo = digitos(csv->numLins);  /* Se os números tem mais de 3 dígitos, imprime com o num. de dígitos */
-         printf("%-*d ", tamMaximo, i);
-         fgets(buffer, MAX_BUF, csv->aqv);
-         substituiVirgulas(buffer);
-         for (j = 0; j < csv->numCols; j++){
-            substr = separaString(buffer, j);
-            tamMaximo = 3;
-            if(csv->arrVar[j].maxLen > 3) tamMaximo = csv->arrVar[j].maxLen;
-            (substr == NULL) ? printf("%*s ", tamMaximo, "NaN") : printf("%*s ", tamMaximo, substr);
-         }
-         printf("\n");
-      }
-      /* Impressão da linha com "..." */
-      tamMaximo = 3;                                                    /* A string "..." possui três dígitos */
-      if (digitos(csv->numLins) > tamMaximo) tamMaximo = digitos(csv->numLins);   /* Se os números tem mais de 3 dígitos, imprime com o num. de dígitos */
-      printf("%-*s ", tamMaximo, "...");
-      for (j = 0; j < csv->numCols; j++){
-         tamMaximo = 3;
-         if (csv->arrVar[j].maxLen > 3) tamMaximo = csv->arrVar[j].maxLen;
-         printf("%*s ", tamMaximo, "...");
-      }
-      printf("\n");
+   imprimeArquivo(csv);
 
-      while (i < csv->numLins - 6){ fgets(buffer, MAX_BUF, csv->aqv); i++; }   /* Pula até a quinta última linha */
-
-      /* Impressão das últimas cinco linhas */
-      for (j = i; j < csv->numLins - 1; j++){
-         tamMaximo = 3;
-         if (digitos(csv->numLins) > tamMaximo) tamMaximo = digitos(csv->numLins);
-         printf("%-*d ", tamMaximo, j);
-         fgets(buffer, MAX_BUF, csv->aqv);
-         substituiVirgulas(buffer);
-         for (k = 0; k < csv->numCols; k++){
-            substr = separaString(buffer, k);
-            tamMaximo = 3;
-            if (csv->arrVar[k].maxLen > 3) tamMaximo = csv->arrVar[k].maxLen;
-            (substr == NULL) ? printf("%*s ", tamMaximo, "NaN") : printf("%*s ", tamMaximo, substr);
-         }
-         printf("\n");
-      }
-   }
-
-   printf("\n[%d rows x %d columns]\n", csv->numLins - 1, csv->numCols);
-
-   fseek(csv->aqv, 0, SEEK_SET);
    return (1);
 }
 
@@ -570,36 +535,54 @@ int mostrar(aqvCSV* csv)
  ------------------------------*/
 int compIgual(char* s1, char* s2)
 {
+   if (s1 == NULL && s2 == NULL) return (1);
+   if (s1 == NULL && s2 != NULL) return (0);
+   if (s1 != NULL && s2 == NULL) return (0); 
    if (strcmp(s1, s2) == 0) return (1);
    return (0);
 }
 
 int compMaior(char* s1, char* s2)
 {
+   if (s1 == NULL && s2 == NULL) return (0);
+   if (s1 == NULL && s2 != NULL) return (0);
+   if (s1 != NULL && s2 == NULL) return (1); 
    if (strcmp(s1, s2) > 0) return (1);
    return (0);
 }
 
 int compMaiorIgual(char* s1, char* s2)
 {
+   if (s1 == NULL && s2 == NULL) return (1);
+   if (s1 == NULL && s2 != NULL) return (0);
+   if (s1 != NULL && s2 == NULL) return (1); 
    if (strcmp(s1, s2) >= 0) return (1);
    return (0);
 }
 
 int compMenor(char* s1, char* s2)
 {
+   if (s1 == NULL && s2 == NULL) return (0);
+   if (s1 == NULL && s2 != NULL) return (1);
+   if (s1 != NULL && s2 == NULL) return (0); 
    if (strcmp(s1, s2) < 0) return (1);
    return (0);
 }
 
 int compMenorIgual(char* s1, char* s2)
 {
+   if (s1 == NULL && s2 == NULL) return (1);
+   if (s1 == NULL && s2 != NULL) return (1);
+   if (s1 != NULL && s2 == NULL) return (0); 
    if (strcmp(s1, s2) <= 0) return (1);
    return (0);
 }
 
 int compDiferente(char* s1, char* s2)
 {
+   if (s1 == NULL && s2 == NULL) return (0);
+   if (s1 == NULL && s2 != NULL) return (1);
+   if (s1 != NULL && s2 == NULL) return (1); 
    if (strcmp(s1, s2) != 0) return (1);
    return (0);
 }
@@ -980,10 +963,12 @@ int ordenaDados(aqvCSV* csv, char *var, int opt)
 int selecionaDados(aqvCSV* csv, char* var)
 {
    int i, j, contaVar, achouVar;
-   char *substr;
+   char buffer[MAX_BUF], *substr;
+   
+   if (csv == NULL || var == NULL) return (0);
 
    /* Prepara os vetores de impressão
-    * para a função selecionaDados */
+    * para a função selecionaDados() */
    for (i = 0; i < csv->numLins; i++)
       csv->printLins[i] = 1;
 
@@ -993,10 +978,13 @@ int selecionaDados(aqvCSV* csv, char* var)
    /* Contagem de variáveis em var 
     * Além disso, substitui espaços por nulo */
    contaVar = 1;
-   for (i = 0; var[i] != '\0'; i++)
-      if (var[i] == ' ') contaVar++;
-   for (i = 0; i < strlen(var); i++)
-      if (var[i] == ' ') var[i] = '\0';
+   strcpy(buffer, var);
+   int tamVar = strlen(buffer);
+   for (i = 0; i < tamVar; i++)
+      if (var[i] == ' '){ 
+         var[i] = '\0';
+         contaVar++;
+      }
    
    /* Verifica se todas as variáveis dadas estão no arquivo
     * Além disso, guarda os índices das colunas das variáveis */
@@ -1004,10 +992,11 @@ int selecionaDados(aqvCSV* csv, char* var)
    for (i = 0; i < contaVar; i++){
       substr = separaString(var, i);
       for (j = 0; j < csv->numCols; i++){
-         if (strcmp(substr, csv->arrVar[j].nome) == 0){
-            csv->printCols[j] = 1;
-            achouVar++;
-         }
+         if (substr != NULL)
+            if (strcmp(substr, csv->arrVar[j].nome) == 0){
+               csv->printCols[j] = 1;
+               achouVar++;
+            }
       }
    }
    printf("\n");
@@ -1094,25 +1083,18 @@ int main()
    FILE* arqT;
    int i;
 
-   arqT = fopen("Teste2.csv", "r");
+   arqT = fopen("Teste3.csv", "r");
    aqvCSV* csv = criaAqvCSV(arqT);
    //Testa contaColunas()
    printf("Numero colunas = %d\n", csv->numCols);
    printf("Numero linhas = %d\n", csv->numLins);
    printf("\n");
 
-   // Teste do vetor
-   //for (int i = 0; i < csv->numLins; i++)
-   //   printf("%d %s", csv->tabela[i].indOrig, csv->tabela[i].lin);
-   char teste[MAX_BUF];
+   filtros(csv, compIgual, "Idade", "32.0");
+   printf("\n");
+   //char teste[MAX_BUF] = "Idade Profissao";
+   //selecionaDados(csv, teste);
+   dadosFaltantes(csv, 1);
 
-   for (i = 0; i < csv->numLins; i++)
-      csv->printLins[i] = 1;
-
-   for (i = 0; i < csv->numCols; i++)
-      csv->printCols[i] = 1;
-
-   imprimeArquivo(csv);
-   
    return (0);
 }
