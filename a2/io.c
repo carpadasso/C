@@ -34,6 +34,9 @@ int maior(int a, int b)
  * Retorna 1 se está presente, ou 0 caso contrário. */
 int indiceNoVet(int ind, int *intVet, int tam)
 {
+   if (intVet == NULL) return (0);
+   if (ind < 0 || tam < 0) return (0);
+
    for (int i = 0; i < tam; i++)
       if (intVet[i] == ind) return (1);
    return (0);
@@ -53,8 +56,11 @@ int digitos(int n)
  * Substitui todos os caracteres ',' e '\n' pelo caractere nulo '\0'. */
 void substituiVirgulas(char* str)
 {
-   int tam = strlen(str);
+   int tam;
+   
+   if (str == NULL) return;
 
+   tam = strlen(str);
    for (int i = 0; i < tam; i++)
       if (str[i] == ',' || str[i] == '\n')
          str[i] = '\0';
@@ -62,12 +68,14 @@ void substituiVirgulas(char* str)
 
 /* Recebe uma linha de um arquivo .csv e o índice da coluna do arquivo. 
  * Retorna o endereço do primeiro caractere da string da coluna ou NULL. */
-char* separaString(char* line, int indCol)
+char* separaString(char* lin, int indCol)
 {
    int indice = 0;
    char *inicio;
    
-   inicio = line;
+   if (lin == NULL) return NULL;
+
+   inicio = lin;
    while (indice < indCol) {
       if (inicio[0] == '\0') indice++;
       inicio = &inicio[1];
@@ -84,6 +92,8 @@ int colunasNaLinha(char* linha)
    char* pnt;
    unsigned int numCols = 1;
    
+   if (linha == NULL) return (0);
+
    pnt = linha;
    while (pnt[0] != '\0'){
       if (pnt[0] == ',') numCols++;
@@ -117,6 +127,8 @@ int verificaArquivo(aqvCSV* csv){
    int i, len, cols;
    char buffer[MAX_BUF], *substr;
    
+   if (csv == NULL) return (0);
+
    /* Verificação do número de colunas */
    fgets(buffer, MAX_BUF, csv->aqv);
    substituiVirgulas(buffer);
@@ -159,6 +171,8 @@ int contaColunas(FILE* aqv)
    int numCols = 1;
    char buffer[MAX_BUF], *str;
 
+   if (aqv == NULL) return (0);
+
    str = fgets(buffer, MAX_BUF, aqv);
    if (str != buffer) return 0;
 
@@ -177,6 +191,8 @@ int contaLinhas(FILE* aqv)
    int numLin = 0;
    char c;
    
+   if (aqv == NULL) return (0);
+
    c = fgetc(aqv);
    while (c != EOF){
       if (c == '\n') numLin++;
@@ -195,6 +211,8 @@ linha* geraTabela(FILE* aqv)
    int indice, numLins;
    char buffer[MAX_BUF];
    
+   if (aqv == NULL) return NULL;
+
    numLins = contaLinhas(aqv);
    tabela = (linha*) malloc ((numLins) * sizeof(linha));
    if (tabela == NULL) return NULL;
@@ -213,12 +231,56 @@ linha* geraTabela(FILE* aqv)
    return (tabela);
 }
 
+/* Recebe um arquivo .csv.
+ * Aloca um vetor de variáveis do arquivo e retorna o ponteiro para tal, ou NULL em uma falha. */
+variavel* geraVariaveis(FILE* aqv)
+{
+   char buffer[MAX_BUF], *substr;
+   variavel *arrVar;
+   int i, numCols;
+
+   if (aqv == NULL) return NULL;
+
+   numCols = contaColunas(aqv);
+   if (numCols == 0) return NULL;
+
+   arrVar = (variavel*) malloc (numCols * sizeof(variavel));
+   if (arrVar == NULL) return NULL;
+
+   for (i = 0; i < numCols; i++) arrVar[i].tipo = STRING;
+
+   /* Leitura do cabeçalho */
+   fgets(buffer, MAX_BUF, aqv);
+   substituiVirgulas(buffer);
+   for (i = 0; i < numCols; i++){
+      substr = separaString(buffer, i);
+      strcpy(arrVar[i].nome, substr);
+   }
+
+   /* Leitura das linhas restantes 
+    * Verifica se a variável é do tipo numérico, se for, atribui NUMERIC 
+    * Além disso, calcula a quantidade de caracteres máximos para impressão */
+   while (!feof(aqv)){
+      fgets(buffer, MAX_BUF, aqv);
+      substituiVirgulas(buffer);
+      for (int j = 0; j < numCols; j++){
+         substr = separaString(buffer, j);
+         if (substr != NULL && atof(substr)) arrVar[j].tipo = NUMERIC;
+      }
+   }
+   
+   fseek(aqv, 0, SEEK_SET);
+   return (arrVar);
+}
+
 void imprimeArquivo(aqvCSV* csv)
 {
    int i, lin, col; 
    int contador, qntdLinhas, qntdColunas, indiceMaximo;
    int *tamMaximo, *guardaLinha;
    char buffer[MAX_BUF], *substr;
+
+   if (csv == NULL) return;
 
    /* Conta a quantidade de linhas a serem impressas */
    qntdLinhas = 0;
@@ -246,11 +308,9 @@ void imprimeArquivo(aqvCSV* csv)
       if (substr != NULL) tamMaximo[col] = strlen(substr); /* Coloca o tamanho das variáveis no tamMaximo */
    }
 
-   printf("Indice maximo = %d\n", indiceMaximo);
-
    if (qntdLinhas <= 11){
-      /* Calcula o tamanho de impressão dos valores */
-      for (lin = 1; lin < csv->numLins + 1; lin++){
+      /* 1 - Calcula o tamanho de impressão dos valores */
+      for (lin = 1; lin < csv->numLins; lin++){
          if (csv->printLins[lin] == 1){
             strcpy(buffer, csv->tabela[lin].lin);
             substituiVirgulas(buffer);
@@ -262,7 +322,7 @@ void imprimeArquivo(aqvCSV* csv)
          }
       }
 
-      /* Impressão do Cabeçalho do Arquivo */
+      /* 2 - Impressão do Cabeçalho do Arquivo */
       strcpy(buffer, csv->tabela[0].lin);
       substituiVirgulas(buffer);
       for (i = 0; i < digitos(indiceMaximo - 1) + 1; i++)
@@ -279,7 +339,7 @@ void imprimeArquivo(aqvCSV* csv)
          }
       printf("\n");
 
-      /* Impressão do Conteúdo do Arquivo */
+      /* 3 - Impressão do Conteúdo do Arquivo */
       for (lin = 1; lin < csv->numLins; lin++){
          if (csv->printLins[lin] == 1){
             printf("%-*d ", digitos(indiceMaximo - 1), lin - 1); /* Imprime o índice da linha */
@@ -305,14 +365,14 @@ void imprimeArquivo(aqvCSV* csv)
       if (guardaLinha == NULL) { free(tamMaximo); return; }
 
       contador = 0;
-      /* Pega o índice das primeiras cinco linhas */
+      /* 1 - Pega o índice das primeiras cinco linhas */
       for (lin = 1; lin < csv->numLins && contador < 5; lin++){
          if (csv->printLins[lin] == 1){
             guardaLinha[contador] = lin;
             contador++;
          }
       }
-      /* Pega o índice das últimas cinco linhas */
+      /* 2 - Pega o índice das últimas cinco linhas */
       contador = 0;
       for (lin = csv->numLins - 1; lin > 0 && contador < 5; lin--){
          if (csv->printLins[lin] == 1){
@@ -321,7 +381,7 @@ void imprimeArquivo(aqvCSV* csv)
          }
       }
       
-      /* Calcula o valor máximo de caracteres para as linhas */
+      /* 3 - Calcula o valor máximo de caracteres para as linhas */
       for (i = 0; i < 10; i++){
          lin = guardaLinha[i];
          strcpy(buffer, csv->tabela[lin].lin);
@@ -336,7 +396,7 @@ void imprimeArquivo(aqvCSV* csv)
 
       indiceMaximo = guardaLinha[9];
      
-      /* Impressão do Cabeçalho do Arquivo */
+      /* 4 - Impressão do Cabeçalho do Arquivo */
       strcpy(buffer, csv->tabela[0].lin);
       substituiVirgulas(buffer);
       for (i = 0; i < maior(digitos(indiceMaximo - 1), 3) + 1; i++)
@@ -354,7 +414,7 @@ void imprimeArquivo(aqvCSV* csv)
          }
       printf("\n");
 
-      /* Imprime as cinco primeiras linhas */
+      /* 5 - Imprime as cinco primeiras linhas */
       for (i = 0; i < 5; i++){
          lin = guardaLinha[i];
          printf("%-*d ", maior(digitos(indiceMaximo - 1), 3), lin - 1);
@@ -373,14 +433,14 @@ void imprimeArquivo(aqvCSV* csv)
          printf("\n");
       }
       
-      /* Imprime as reticências */
+      /* 6 - Imprime as reticências */
       printf("%-*s ", maior(digitos(indiceMaximo - 1), 3), "...");
       for (col = 0; col < csv->numCols; col++)
          if (csv->printCols[col] == 1)
             printf("%*s ", tamMaximo[col], "...");
       printf("\n");
 
-      /* Imprime as últimas cinco linhas */
+      /* 7 - Imprime as últimas cinco linhas */
       for (i = 5; i < 10; i++){
          lin = guardaLinha[i];
          printf("%-*d ", maior(digitos(indiceMaximo - 1), 3), lin - 1);
@@ -403,49 +463,6 @@ void imprimeArquivo(aqvCSV* csv)
    
    printf("\n[%d rows x %d columns]\n", qntdLinhas, qntdColunas);
    free(tamMaximo);
-}
-
-/* Recebe um arquivo .csv.
- * Aloca um vetor de variáveis do arquivo e retorna o ponteiro para tal, ou NULL em uma falha. */
-variavel* geraVariaveis(FILE* aqv)
-{
-   char buffer[MAX_BUF], *substr;
-   variavel *arrVar;
-   int i, numCols;
-
-   numCols = contaColunas(aqv);
-   if (numCols == 0) return NULL;
-
-   arrVar = (variavel*) malloc (numCols * sizeof(variavel));
-   if (arrVar == NULL) return NULL;
-
-   for (i = 0; i < numCols; i++) arrVar[i].tipo = STRING;
-
-   /* Leitura do cabeçalho */
-   fgets(buffer, MAX_BUF, aqv);
-   substituiVirgulas(buffer);
-   for (i = 0; i < numCols; i++){
-      substr = separaString(buffer, i);
-      strcpy(arrVar[i].nome, substr);
-      arrVar[i].maxLen = strlen(substr);
-   }
-
-   /* Leitura das linhas restantes 
-    * Verifica se a variável é do tipo numérico, se for, atribui NUMERIC 
-    * Além disso, calcula a quantidade de caracteres máximos para impressão */
-   while (!feof(aqv)){
-      fgets(buffer, MAX_BUF, aqv);
-      substituiVirgulas(buffer);
-      for (int j = 0; j < numCols; j++){
-         substr = separaString(buffer, j);
-         if (substr != NULL && atof(substr)) arrVar[j].tipo = NUMERIC;
-         if (substr != NULL && strlen(substr) > arrVar[j].maxLen)
-            arrVar[j].maxLen = strlen(substr);
-      }
-   }
-   
-   fseek(aqv, 0, SEEK_SET);
-   return (arrVar);
 }
 
 aqvCSV* criaAqvCSV(FILE* aqv){
@@ -482,11 +499,55 @@ aqvCSV* criaAqvCSV(FILE* aqv){
 
 void destroiAqvCSV(aqvCSV* csv)
 {
+   if (csv == NULL) return;
+
    if (csv->printLins) free(csv->printLins);
    if (csv->printCols) free(csv->printCols);
    if (csv->tabela) free(csv->tabela);
    if (csv->arrVar) free(csv->arrVar);
    free(csv);
+}
+
+int gravaCSV(aqvCSV* csv, char* nomeAqv)
+{
+   FILE* aqvNovo;
+   int lin, col;
+   char buffer[MAX_BUF], *substr;
+
+   if (csv == NULL) return (0);
+
+   aqvNovo = fopen(nomeAqv, "w");
+   if (aqvNovo == NULL) return (0);
+
+   /* Escrita do cabeçalho */
+   strcpy(buffer, csv->tabela[0].lin);
+   substituiVirgulas(buffer);
+
+   for (col = 0; col < csv->numCols; col++){
+      substr = separaString(buffer, col);
+      if (substr != NULL) fprintf(aqvNovo, "%s", substr);
+      if (col != csv->numCols - 1) fprintf(aqvNovo, "%c", ',');
+   }
+   fprintf(aqvNovo, "%c", '\n');
+
+   /* Escrita do conteúdo */
+   for (lin = 1; lin < csv->numLins; lin++){
+      if (csv->printLins[lin] == 1){
+         strcpy(buffer, csv->tabela[lin].lin);
+         substituiVirgulas(buffer);
+         for (col = 0; col < csv->numCols; col++){
+            if (csv->printCols[col] == 1){
+               substr = separaString(buffer, col);
+               if (substr != NULL) fprintf(aqvNovo, "%s", substr);
+               if (col != csv->numCols - 1) fprintf(aqvNovo, "%c", ',');
+            }
+         }
+         if (lin != csv->numLins - 1) fprintf(aqvNovo, "%c", '\n');
+      }
+   }
+
+   fclose(aqvNovo);
+   return (1);
 }
 
 /*------------------------------
@@ -522,8 +583,6 @@ int mostrar(aqvCSV* csv)
       csv->printLins[i] = 1;
    for (i = 0; i < csv->numCols; i++)
       csv->printCols[i] = 1;
-   csv->printCols[2] = 0;
-   csv->printCols[3] = 0;
 
    imprimeArquivo(csv);
 
@@ -626,13 +685,14 @@ int filtros(aqvCSV* csv, int (*filt) (char*, char*), char* var, char* valor)
 /*------------------------------
       DESCRIÇÃO DOS DADOS
  ------------------------------*/
- int particionaFloat(float* v, int ini, int fim)
+int particionaString(char** v, int ini, int fim)
 {
-   float x = v[fim], troca;
+   char *x, *troca;
    int i = ini - 1;
-
+   
+   x = v[fim];
    for (int j = ini; j < fim; j++){
-      if (v[j] <= x){
+      if (strcmp(v[j], x) <= 0){
          i++;
          troca = v[i];
          v[i] = v[j];
@@ -642,38 +702,6 @@ int filtros(aqvCSV* csv, int (*filt) (char*, char*), char* var, char* valor)
    troca = v[i + 1];
    v[i + 1] = v[fim];
    v[fim] = troca;
-
-   return (i + 1);
-}
-
-void ordenaFloat(float* v, int ini, int fim)
-{
-   int q;
-
-   if (ini < fim){
-      q = particionaFloat(v, ini, fim);
-      ordenaFloat(v, ini, q - 1);
-      ordenaFloat(v, q + 1, fim);
-   }
-}
-
-int particionaString(char** v, int ini, int fim)
-{
-   char x[MAX_BUF], troca[MAX_BUF];
-   int i = ini - 1;
-   
-   strcpy(x, v[fim]);
-   for (int j = ini; j < fim; j++){
-      if (strcmp(v[j], x) <= 0){
-         i++;
-         strcpy(troca, v[i]);
-         strcpy(v[i], v[j]);
-         strcpy(v[j], troca);
-      }
-   }
-   strcpy(troca, v[i + 1]);
-   strcpy(v[i + 1], v[fim]);
-   strcpy(v[fim], troca);
 
    return (i + 1);
 }
@@ -689,28 +717,20 @@ void ordenaString(char** v, int ini, int fim)
    }
 }
 
-void imprimeUnicosNum(char** valUnicos, int contaUnicos)
-{
-   printf("[ ");
-   for (int i = 0; i < contaUnicos; i++)
-      if (i != contaUnicos - 1)
-         printf("%.1f, ", atof(valUnicos[i]));
-      else
-         printf("%.1f ", atof(valUnicos[i]));
-   printf("]\n");
-}
-
-void imprimeUnicosStr(char** valUnicos, int contadorUnicos)
+void imprimeUnicos(char** valUnicos, int contadorUnicos)
 {
    printf("[ ");
    for (int i = 0; i < contadorUnicos; i++){
-      if (i != contadorUnicos - 1)
-         printf("'%s', ", valUnicos[i]);
-      else
-         printf("'%s' ", valUnicos[i]);
+      if (i != contadorUnicos - 1){
+         if (atof(valUnicos[i])) printf("%s, ", valUnicos[i]);
+         else printf("'%s', ", valUnicos[i]);
+      }
+      else{
+         if (atof(valUnicos[i])) printf("%s ", valUnicos[i]);
+         else printf("'%s' ", valUnicos[i]);
+      }
    }
    printf("]\n");
-
 }
 
 //---------------------------
@@ -720,11 +740,12 @@ void descricaoNum(aqvCSV* csv, int indVar)
 {
    int i, j;
    int moda, maior, contador, contadorUnicos, *qntAparece;
+
    float soma, media, mediana, valMin, valMax;
-   float *valores;
    double variancia, desvioPadrao;
+
    char buffer[MAX_BUF], *substr;
-   char **valUnicos;
+   char **valores, **valUnicos;
   
    /* Conta quantos valores não nulos a variável tem 
     * A variável 'contador' recebe o valor */
@@ -739,7 +760,7 @@ void descricaoNum(aqvCSV* csv, int indVar)
    
    if (contador == 0) return; /* Não possui valores não nulos */
 
-   valores = (float*) malloc (contador * sizeof(float));
+   valores = (char**) malloc (contador * sizeof(char**));
    if (valores == NULL) return;
 
    /* Faz a leitura dos valores da variável em um
@@ -751,7 +772,7 @@ void descricaoNum(aqvCSV* csv, int indVar)
 
       substr = separaString(buffer, indVar);
       if (substr != NULL){
-         valores[j] = atof(substr);
+         valores[j] = strdup(substr);
          j++;
       }
    }
@@ -759,24 +780,26 @@ void descricaoNum(aqvCSV* csv, int indVar)
    /* Cálculo da Média */
    soma = 0;
    for (i = 0; i < contador; i++)
-      soma += valores[i];
+      soma += atof(valores[i]);
    media = soma / contador;
    
    /* Cálculo do Desvio */
    variancia = 0;
    for (i = 0; i < contador; i++)
-      variancia += (valores[i] - media) * (valores[i] - media);
+      variancia += (atof(valores[i]) - media) * (atof(valores[i]) - media);
    desvioPadrao = sqrt(variancia / (contador - 1.0));
    
    /* Cálculo da Mediana */
-   ordenaFloat(valores, 0, contador - 1);
-   if (contador % 2 == 1) mediana = valores[(contador - 1) / 2];
-   else mediana = (valores[(contador / 2)] + valores[(contador / 2) - 1]) / 2;
+   ordenaString(valores, 0, contador - 1);
+   if (contador % 2 == 1) mediana = atof(valores[(contador - 1) / 2]);
+   else mediana = (atof(valores[(contador / 2)]) + atof(valores[(contador / 2) - 1])) / 2;
    
    /* Cálculo do Valor Mínimo e Máximo */
-   valMin = valores[0];
-   valMax = valores[contador - 1];
-   
+   valMin = atof(valores[0]);
+   valMax = atof(valores[contador - 1]);
+
+   for (i = 0; i < contador; i++)
+      free(valores[i]);
    free(valores);
 
    /* Cálculo da Moda e dos Valores Únicos */
@@ -801,7 +824,7 @@ void descricaoNum(aqvCSV* csv, int indVar)
          }
       }
    }
-   
+
    ordenaString(valUnicos, 0, contadorUnicos - 1);
 
    qntAparece = (int*) malloc (contadorUnicos * sizeof(int));
@@ -810,7 +833,7 @@ void descricaoNum(aqvCSV* csv, int indVar)
    for (i = 0; i < contadorUnicos; i++)
       qntAparece[i] = 0;
 
-   for (i = 0; i < contadorUnicos; i++){
+   for (i = 0; i < csv->numLins; i++){
       strcpy(buffer, csv->tabela[i].lin);
       substituiVirgulas(buffer);
 
@@ -827,6 +850,10 @@ void descricaoNum(aqvCSV* csv, int indVar)
          maior = qntAparece[i];
          moda = i;
       }
+   
+   printf("Valores modais: ");
+   for (i = 0; i < contadorUnicos; i++) printf("%d ", qntAparece[i]);
+   printf("\n");
 
    printf("Contador: %d\n", contador);
    printf("Media: %.1f\n", media);
@@ -836,7 +863,7 @@ void descricaoNum(aqvCSV* csv, int indVar)
    printf("Min.: %.1f\n", valMin);
    printf("Max.: %.1f\n", valMax);
    printf("Valores unicos: ");
-   imprimeUnicosNum(valUnicos, contadorUnicos);
+   imprimeUnicos(valUnicos, contadorUnicos);
 
    for (i = 0; i < contadorUnicos; i++)
       free(valUnicos[i]);
@@ -897,7 +924,7 @@ void descricaoString(aqvCSV* csv, int indVar)
    for (i = 0; i < contadorUnicos; i++)
       qntAparece[i] = 0;
 
-   for (i = 0; i < contadorUnicos; i++){
+   for (i = 0; i < csv->numLins; i++){
       strcpy(buffer, csv->tabela[i].lin);
       substituiVirgulas(buffer);
 
@@ -918,11 +945,12 @@ void descricaoString(aqvCSV* csv, int indVar)
    printf("Contador: %d\n", contador);
    printf("Moda: %s %d vezes\n", valUnicos[moda], qntAparece[moda]);
    printf("Valores unicos: ");
-   imprimeUnicosStr(valUnicos, contadorUnicos);
+   imprimeUnicos(valUnicos, contadorUnicos);
 
    for (i = 0; i < contadorUnicos; i++)
       free(valUnicos[i]);
    free(valUnicos);
+   free(qntAparece);
 }
 
 //------------------------------------
@@ -942,17 +970,16 @@ int descricaoDados(aqvCSV* csv, char* var)
    return (1);
 }
 //------------------------------------
+
 /*------------------------------
       ORDENAÇÃO 
  ------------------------------*/
-
 int ordenaDados(aqvCSV* csv, char *var, int opt)
 {
-   int *indices;
-
-   indices = (int*) malloc (csv->numLins * sizeof(int));
-   if (indices == NULL) return (0);
-   
+   printf("Linhas: %d", csv->numLins);
+   printf("Colunas: %d", csv->numCols);
+   printf("Variavel: %s\n", var);
+   printf("Ordem: %d\n", opt);
     
    return (1);
 }
@@ -977,11 +1004,13 @@ int selecionaDados(aqvCSV* csv, char* var)
 
    /* Contagem de variáveis em var 
     * Além disso, substitui espaços por nulo */
+   for (i = 0; i < strlen(var); i++)
+      printf("%c", var[i]);
+   
    contaVar = 1;
    strcpy(buffer, var);
-   int tamVar = strlen(buffer);
-   for (i = 0; i < tamVar; i++)
-      if (var[i] == ' '){ 
+   for (i = 0; i < strlen(buffer); i++)
+      if (var[i] == '\n'){ 
          var[i] = '\0';
          contaVar++;
       }
@@ -1019,7 +1048,8 @@ int dadosFaltantes(aqvCSV* csv, int escolha)
    if (csv == NULL) return (0);
     /* Prepara os vetores de impressão para 
     * imprimir as linhas nulas */
-   for (i = 0; i < csv->numLins; i++)
+   csv->printLins[0] = 1;
+   for (i = 1; i < csv->numLins; i++)
       csv->printLins[i] = 0;
    for (i = 0; i < csv->numCols; i++)
       csv->printCols[i] = 1;
@@ -1090,11 +1120,10 @@ int main()
    printf("Numero linhas = %d\n", csv->numLins);
    printf("\n");
 
-   filtros(csv, compIgual, "Idade", "32.0");
-   printf("\n");
-   char teste[MAX_BUF] = "Idade Profissao\0";
-   selecionaDados(csv, teste);
-   dadosFaltantes(csv, 1);
+   filtros(csv, compMenor, "Idade", "32.0");
+
+   char* novoAqv = "pancada.csv";
+   gravaCSV(csv, novoAqv);
 
    return (0);
 }*/

@@ -11,7 +11,7 @@ int main(int argc, char** argv)
    FILE *aqv;
 
    int opt, escolha, op;
-   char c, *filename, nomeAqv[MAX_BUF], var[MAX_BUF], valor[MAX_BUF], comparador[MAX_BUF];
+   char *filename, c, nomeAqv[MAX_BUF], var[MAX_BUF], valor[MAX_BUF], comparador[MAX_BUF];
    
    int (*filt) (char *s1, char* s2);
 
@@ -26,7 +26,6 @@ int main(int argc, char** argv)
       fprintf(stderr, "Erro ao abrir o arquivo.\n");
       exit(2);
    }
-   free(filename);
 
    csv = criaAqvCSV(aqv);
    if (csv == NULL){
@@ -39,8 +38,6 @@ int main(int argc, char** argv)
       fprintf(stderr, "Arquivo com erros de formatação!\n");
       exit(3);
    }
-   
-   printf("Carregando...\n\n");
 
    while (1) {
       printf("1) Sumario do Arquivo\n"
@@ -52,28 +49,36 @@ int main(int argc, char** argv)
              "8) Salvar Dados\n"
              "9) Fim\n");
       printf("Escolha a opcao: ");
-      setbuf(stdin, NULL);
       scanf("%d", &opt);
+      fflush(stdin);
       printf("\n");
+
       switch (opt) {
          case 1:
+            /* --------------------------------- */
             /* Opção 1 - Sumário */
             if (!sumario(csv))
                printf("Erro ao exibir o sumario.\n");
             break;
+            /* --------------------------------- */
          case 2:
+            /* --------------------------------- */
             /* Opção 2 - Mostrar */
             if (!mostrar(csv))
                printf("Erro ao mostrar os dados do arquivo.\n");
             break;
+            /* --------------------------------- */
          case 3:
+            /* --------------------------------- */
             /* Opção 3 - Filtros*/
             printf("Entre com a variavel: ");
             scanf("%s", var);
+            fflush(stdin);
 
             printf("Escolha um filtro ( == > >= < <= != ): ");
             scanf("%s", comparador);
-            
+            fflush(stdin);
+
             if (!strcmp(comparador, "==")) filt = compIgual;
             else if (!strcmp(comparador, ">")) filt = compMaior;
             else if (!strcmp(comparador, ">=")) filt = compMaiorIgual;
@@ -87,23 +92,73 @@ int main(int argc, char** argv)
 
             printf("Digite um valor: ");
             scanf("%s", valor);
-            
+            fflush(stdin);
+
             if (!filtros(csv, filt, var, valor)){
                printf("Nao foi possivel aplicar o filtro desejado.\n");
                break;
             }
 
+            printf("Deseja gravar um arquivo com os dados filtrados? [S|N] ");
+            scanf(" %c", &c);
+            fflush(stdin);
+
+            if (c != 'S' && c != 'N'){
+               printf("Opcao invalida.\n");
+               break;
+            }
+
+            if (c == 'S'){
+               printf("Entre com o nome do arquivo: ");
+               scanf("%s", nomeAqv);
+               fflush(stdin);
+
+               if (!gravaCSV(csv, nomeAqv)){
+                  printf("Erro ao gravar o arquivo.\n");
+                  break;
+               }
+               
+               printf("Deseja descartar os dados originais? [S|N] ");
+               scanf(" %c", &c);
+               fflush(stdin);
+
+               if (c != 'S' && c != 'N'){
+                  printf("Opcao invalida.\n");
+                  break;
+               }
+
+               if (c == 'S'){
+                  freopen(nomeAqv, "r", aqv);
+                  if (aqv == NULL){
+                     printf("Erro ao descartar o arquivo.\n");
+                     break;
+                  }
+                  destroiAqvCSV(csv);
+                  csv = criaAqvCSV(aqv);
+                  if (csv == NULL){
+                     printf("Erro ao descartar o arquivo.\n");
+                     break;
+                  }
+                  printf("Arquivo descartado com sucesso.\n");
+               } 
+            }
+
             break;
+            /* --------------------------------- */
          case 4:
+            /* --------------------------------- */
             /* Opção 4 - Descrição de Dados */
             printf("Entre com a variavel: ");
             scanf("%s", var);
+            fflush(stdin);
 
             if (!descricaoDados(csv, var))
                printf("Erro ao realizar a descricao da variavel.\n");
 
             break;
+            /* --------------------------------- */
          case 5:
+            /* --------------------------------- */
             /* Opção 5 - Ordenação */
             printf("Entre com a variavel: ");
             scanf("%s", var);
@@ -111,7 +166,7 @@ int main(int argc, char** argv)
             fflush(stdin);
 
             printf("Selecione uma opcao [A]scendente ou [D]escendente: ");
-            scanf("%c", &c);
+            scanf(" %c", &c);
             if (c != 'A' && c != 'D'){
                printf("Opcao invalida.\n");
                break;
@@ -125,64 +180,86 @@ int main(int argc, char** argv)
                break;
             }
             
-            fflush(stdin);
             printf("Deseja gravar um arquivo com os dados ordenados? [S|N] ");
-            scanf("%c", &c);
-            if (c != 'N' && c != 'S'){
+            scanf(" %c", &c);
+            fflush(stdin);
+
+            if (c != 'S' && c != 'N'){
                printf("Opcao invalida.\n");
                break;
             }
-            
+
             if (c == 'S'){
                printf("Entre com o nome do arquivo: ");
-               scanf("%[^\n]", nomeAqv);
-               getchar();
+               scanf("%s", nomeAqv);
+               fflush(stdin);
 
-               if (!salvaDados(csv, nomeAqv)){
+               if (!gravaCSV(csv, nomeAqv)){
                   printf("Erro ao gravar o arquivo.\n");
                   break;
                }
                
                printf("Deseja descartar os dados originais? [S|N] ");
-               do {
-                  c = getchar();
-                  if (c != 'N' && c != 'S') printf("Opcao errada, tente novamente: ");
-               } while (c != 'N' && c != 'S');
-               if (c == 'S') freopen(nomeAqv, "r+", csv->aqv); 
+               scanf(" %c", &c);
+               fflush(stdin);
+
+               if (c != 'S' && c != 'N'){
+                  printf("Opcao invalida.\n");
+                  break;
+               }
+
+               if (c == 'S'){
+                  freopen(nomeAqv, "r", aqv);
+                  if (aqv == NULL){
+                     printf("Erro ao descartar o arquivo.\n");
+                     break;
+                  }
+                  destroiAqvCSV(csv);
+                  csv = criaAqvCSV(aqv);
+                  if (csv == NULL){
+                     printf("Erro ao descartar o arquivo.\n");
+                     break;
+                  }
+                  printf("Arquivo descartado com sucesso.\n");
+               } 
             }
 
             break;
+            /* --------------------------------- */
          case 6:
             /* --------------------------------- */
             /* Opção 6 - Seleção */
             printf("Entre com a(s) variavel(is) que deseja selecionar (separadas por espaco): ");
-            scanf("%[^\n]", var);
-            getchar();
+            scanf("%s", var);
+            fflush(stdin);
 
             if (!selecionaDados(csv, var))
                printf("Nao foi possivel selecionar os dados desejados.\n");
             
-            printf("Deseja gravar um arquivo com os dados ordenados? [S|N] ");
-            do {
-               c = getchar();
-               if (c != 'N' && c != 'S') printf("Opcao errada, tente novamente: ");
-            } while (c != 'N' && c != 'S');
+            printf("Deseja gravar um arquivo com as variaveis selecionadas? [S|N] ");
+            scanf(" %c", &c);
+            fflush(stdin);
+
+            if (c != 'S' || c != 'N'){
+               printf("Opcao invalida.\n");
+               break;
+            }
 
             if (c == 'S'){
                printf("Entre com o nome do arquivo: ");
-               scanf("%[^\n]", nomeAqv);
-               getchar();
+               scanf("%s", nomeAqv);
+               fflush(stdin);
 
-               if (!salvaDados(csv, nomeAqv)){
+               if (!gravaCSV(csv, nomeAqv)){
                   printf("Erro ao gravar o arquivo.\n");
                   break;
                }
-               else printf("Arquivo gravado com sucesso.\n");
             }
 
             break;
             /* ------------------------------------ */
          case 7:
+            /* ------------------------------------ */
             /* Opção 7 - Dados Faltantes */
             printf("1) Listar registros com NaN\n"
                    "2) Substituir pela media\n"
@@ -191,11 +268,13 @@ int main(int argc, char** argv)
                    "5) Voltar ao menu principal\n");
             printf("Escolha o que fazer com os dados faltantes: ");
             scanf("%d", &escolha);
+            fflush(stdin);
 
             if (1 <= escolha && escolha <= 4){
                if (!dadosFaltantes(csv, escolha)){
                   printf("Erro ao executar a operacao com os dados faltantes.\n");
                }
+               printf("Operacao concluida com sucesso.\n");
             }
             else if (escolha == 5) break;
             else {
@@ -203,36 +282,57 @@ int main(int argc, char** argv)
             }
             
             if (escolha == 1){
-               printf("Deseja gravar um arquivo com os dados ordenados? [S|N] ");
-               do {
-                  c = getchar();
-                  if (c != 'N' && c != 'S') printf("Opcao errada, tente novamente: ");
-               } while (c != 'N' && c != 'S');
+               printf("Deseja gravar um arquivo com os dados nulos? [S|N] ");
+               scanf(" %c", &c);
+               fflush(stdin);
+
+               if (c != 'S' && c != 'N'){
+                  printf("Opcao invalida.\n");
+                  break;
+               }
 
                if (c == 'S'){
                   printf("Entre com o nome do arquivo: ");
-                  scanf("%[^\n]", nomeAqv);
-                  getchar();
+                  scanf("%s", nomeAqv);
+                  fflush(stdin);
 
-                  if (!salvaDados(csv, nomeAqv)){
+                  if (!gravaCSV(csv, nomeAqv)){
                      printf("Erro ao gravar o arquivo.\n");
                      break;
                   }
-                  
+               
                   printf("Deseja descartar os dados originais? [S|N] ");
-                  do {
-                     c = getchar();
-                     if (c != 'N' && c != 'S') printf("Opcao errada, tente novamente: ");
-                  } while (c != 'N' && c != 'S');
-                  if (c == 'S') freopen(nomeAqv, "r+", csv->aqv); 
+                  scanf(" %c", &c);
+                  fflush(stdin);
+
+                  if (c != 'S' && c != 'N'){
+                     printf("Opcao invalida.\n");
+                     break;
+                  }
+
+                  if (c == 'S'){
+                     freopen(nomeAqv, "r", aqv);
+                     if (aqv == NULL){
+                        printf("Erro ao descartar o arquivo.\n");
+                        break;
+                     }
+                     destroiAqvCSV(csv);
+                     csv = criaAqvCSV(aqv);
+                     if (csv == NULL){
+                        printf("Erro ao descartar o arquivo.\n");
+                        break;
+                     }
+                     printf("Arquivo descartado com sucesso.\n");
+                  } 
                }
             }
-
             break;
+            /* ------------------------------------ */
          case 8:
+            /* ------------------------------------ */
+            /* Opção 8 - Salva Dados */
             printf("Entre com o nome do arquivo: ");
             scanf("%s", nomeAqv);
-            getchar();
 
             if (!salvaDados(csv, nomeAqv))
                printf("Erro ao salvar o arquivo.\n");
@@ -240,7 +340,9 @@ int main(int argc, char** argv)
                printf("Arquivo gravado com sucesso.\n");
 
             break;
+            /* ------------------------------------ */
          case 9:
+            free(filename);
             fclose(csv->aqv);
             destroiAqvCSV(csv);
 
@@ -248,9 +350,11 @@ int main(int argc, char** argv)
          default:
             printf("Opcao invalida! Tente novamente.\n");
       }
-      
-      printf("\nPressione ENTER para continuar\n");
+
       setbuf(stdin, NULL);
-      while (getchar() != '\n') ;
+
+      printf("\nPressione ENTER para continuar\n");
+      getchar();
+      fflush(stdin);
    }
 }

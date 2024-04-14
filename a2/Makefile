@@ -12,4 +12,7 @@ io.o: io.c
 	gcc -Wall -Wextra -c io.c -lm
 
 clean:
-	rm -rf *.o *~ csvreader
+	rm -rf *.o *~
+
+purge: clean
+	rm -rf csvreader
