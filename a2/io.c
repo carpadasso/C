@@ -273,14 +273,14 @@ variavel* geraVariaveis(FILE* aqv)
    return (arrVar);
 }
 
-void imprimeArquivo(aqvCSV* csv)
+int imprimeArquivo(aqvCSV* csv)
 {
    int i, lin, col; 
    int contador, qntdLinhas, qntdColunas, indiceMaximo;
    int *tamMaximo, *guardaLinha;
    char buffer[MAX_BUF], *substr;
 
-   if (csv == NULL) return;
+   if (csv == NULL) return (0);
 
    /* Conta a quantidade de linhas a serem impressas */
    qntdLinhas = 0;
@@ -291,7 +291,7 @@ void imprimeArquivo(aqvCSV* csv)
    for (col = 0; col < csv->numCols; col++)
       if (csv->printCols[col] == 1) qntdColunas++;
 
-   if (qntdLinhas == 0 || qntdColunas == 0) return;  /* Não há linhas para imprimir */
+   if (qntdLinhas == 0 || qntdColunas == 0) return (0);  /* Não há linhas para imprimir */
    
    indiceMaximo = 0;
    for (lin = 1; lin < csv->numLins; lin++)
@@ -299,7 +299,7 @@ void imprimeArquivo(aqvCSV* csv)
    
    /* Calcula o Valor Máximo de Caracteres para Imprimir */
    tamMaximo = (int*) malloc (csv->numCols * sizeof(int));
-   if (tamMaximo == NULL) return;
+   if (tamMaximo == NULL) return (0);
 
    strcpy(buffer, csv->tabela[0].lin);
    substituiVirgulas(buffer);
@@ -329,7 +329,6 @@ void imprimeArquivo(aqvCSV* csv)
          printf(" "); 
       for (col = 0; col < csv->numCols; col++)
          if (csv->printCols[col] == 1){
-            substituiVirgulas(buffer);
             substr = separaString(buffer, col);
 
             if (substr == NULL)
@@ -362,7 +361,7 @@ void imprimeArquivo(aqvCSV* csv)
    }
    else {
       guardaLinha = (int*) malloc (10 * sizeof(int));
-      if (guardaLinha == NULL) { free(tamMaximo); return; }
+      if (guardaLinha == NULL) { free(tamMaximo); return (0); }
 
       contador = 0;
       /* 1 - Pega o índice das primeiras cinco linhas */
@@ -404,7 +403,6 @@ void imprimeArquivo(aqvCSV* csv)
 
       for (col = 0; col < csv->numCols; col++)
          if (csv->printCols[col] == 1){
-            substituiVirgulas(buffer);
             substr = separaString(buffer, col);
 
             if (substr == NULL)
@@ -463,6 +461,8 @@ void imprimeArquivo(aqvCSV* csv)
    
    printf("\n[%d rows x %d columns]\n", qntdLinhas, qntdColunas);
    free(tamMaximo);
+
+   return (1);
 }
 
 aqvCSV* criaAqvCSV(FILE* aqv){
@@ -511,7 +511,7 @@ void destroiAqvCSV(aqvCSV* csv)
 int gravaCSV(aqvCSV* csv, char* nomeAqv)
 {
    FILE* aqvNovo;
-   int lin, col;
+   int lin, col, qtdCols, colsImpressas;
    char buffer[MAX_BUF], *substr;
 
    if (csv == NULL) return (0);
@@ -519,27 +519,37 @@ int gravaCSV(aqvCSV* csv, char* nomeAqv)
    aqvNovo = fopen(nomeAqv, "w");
    if (aqvNovo == NULL) return (0);
 
+   qtdCols = 0;
+   for (col = 0; col < csv->numCols; col++)
+      if (csv->printCols[col] == 1) qtdCols++;
+
    /* Escrita do cabeçalho */
    strcpy(buffer, csv->tabela[0].lin);
    substituiVirgulas(buffer);
 
+   colsImpressas = 0;
    for (col = 0; col < csv->numCols; col++){
-      substr = separaString(buffer, col);
-      if (substr != NULL) fprintf(aqvNovo, "%s", substr);
-      if (col != csv->numCols - 1) fprintf(aqvNovo, "%c", ',');
+      if (csv->printCols[col] == 1){
+         colsImpressas++;
+         substr = separaString(buffer, col);
+         if (substr != NULL) fprintf(aqvNovo, "%s", substr);
+         if (colsImpressas < qtdCols) fprintf(aqvNovo, "%c", ',');
+      }
    }
    fprintf(aqvNovo, "%c", '\n');
 
    /* Escrita do conteúdo */
    for (lin = 1; lin < csv->numLins; lin++){
+      colsImpressas = 0;
       if (csv->printLins[lin] == 1){
          strcpy(buffer, csv->tabela[lin].lin);
          substituiVirgulas(buffer);
          for (col = 0; col < csv->numCols; col++){
             if (csv->printCols[col] == 1){
+               colsImpressas++;
                substr = separaString(buffer, col);
                if (substr != NULL) fprintf(aqvNovo, "%s", substr);
-               if (col != csv->numCols - 1) fprintf(aqvNovo, "%c", ',');
+               if (colsImpressas < qtdCols) fprintf(aqvNovo, "%c", ',');
             }
          }
          if (lin != csv->numLins - 1) fprintf(aqvNovo, "%c", '\n');
@@ -597,6 +607,10 @@ int compIgual(char* s1, char* s2)
    if (s1 == NULL && s2 == NULL) return (1);
    if (s1 == NULL && s2 != NULL) return (0);
    if (s1 != NULL && s2 == NULL) return (0); 
+   if(atof(s1)){
+      if (atof(s1) == atof(s2)) return (1);
+      else return (0);
+   }
    if (strcmp(s1, s2) == 0) return (1);
    return (0);
 }
@@ -605,7 +619,11 @@ int compMaior(char* s1, char* s2)
 {
    if (s1 == NULL && s2 == NULL) return (0);
    if (s1 == NULL && s2 != NULL) return (0);
-   if (s1 != NULL && s2 == NULL) return (1); 
+   if (s1 != NULL && s2 == NULL) return (1);
+   if(atof(s1)){
+      if (atof(s1) > atof(s2)) return (1);
+      else return (0);
+   }
    if (strcmp(s1, s2) > 0) return (1);
    return (0);
 }
@@ -614,7 +632,11 @@ int compMaiorIgual(char* s1, char* s2)
 {
    if (s1 == NULL && s2 == NULL) return (1);
    if (s1 == NULL && s2 != NULL) return (0);
-   if (s1 != NULL && s2 == NULL) return (1); 
+   if (s1 != NULL && s2 == NULL) return (1);
+   if(atof(s1)){
+      if (atof(s1) >= atof(s2)) return (1);
+      else return (0);
+   }
    if (strcmp(s1, s2) >= 0) return (1);
    return (0);
 }
@@ -623,7 +645,11 @@ int compMenor(char* s1, char* s2)
 {
    if (s1 == NULL && s2 == NULL) return (0);
    if (s1 == NULL && s2 != NULL) return (1);
-   if (s1 != NULL && s2 == NULL) return (0); 
+   if (s1 != NULL && s2 == NULL) return (0);
+   if(atof(s1)){
+      if (atof(s1) < atof(s2)) return (1);
+      else return (0);
+   }
    if (strcmp(s1, s2) < 0) return (1);
    return (0);
 }
@@ -632,7 +658,11 @@ int compMenorIgual(char* s1, char* s2)
 {
    if (s1 == NULL && s2 == NULL) return (1);
    if (s1 == NULL && s2 != NULL) return (1);
-   if (s1 != NULL && s2 == NULL) return (0); 
+   if (s1 != NULL && s2 == NULL) return (0);
+   if(atof(s1)){
+      if (atof(s1) <= atof(s2)) return (1);
+      else return (0);
+   }
    if (strcmp(s1, s2) <= 0) return (1);
    return (0);
 }
@@ -641,7 +671,11 @@ int compDiferente(char* s1, char* s2)
 {
    if (s1 == NULL && s2 == NULL) return (0);
    if (s1 == NULL && s2 != NULL) return (1);
-   if (s1 != NULL && s2 == NULL) return (1); 
+   if (s1 != NULL && s2 == NULL) return (1);
+   if(atof(s1)){
+      if (atof(s1) != atof(s2)) return (1);
+      else return (0);
+   }
    if (strcmp(s1, s2) != 0) return (1);
    return (0);
 }
@@ -714,6 +748,38 @@ void ordenaString(char** v, int ini, int fim)
       q = particionaString(v, ini, fim);
       ordenaString(v, ini, q - 1);
       ordenaString(v, q + 1, fim);
+   }
+}
+
+int particionaStringNum(char** v, int ini, int fim)
+{
+   char *x, *troca;
+   int i = ini - 1;
+   
+   x = v[fim];
+   for (int j = ini; j < fim; j++){
+      if (atof(v[j]) < atof(x)){
+         i++;
+         troca = v[i];
+         v[i] = v[j];
+         v[j] = troca;
+      }
+   }
+   troca = v[i + 1];
+   v[i + 1] = v[fim];
+   v[fim] = troca;
+
+   return (i + 1);
+}
+  
+void ordenaStringNum(char** v, int ini, int fim)
+{
+   int q;
+
+   if (ini < fim){
+      q = particionaStringNum(v, ini, fim);
+      ordenaStringNum(v, ini, q - 1);
+      ordenaStringNum(v, q + 1, fim);
    }
 }
 
@@ -790,7 +856,7 @@ void descricaoNum(aqvCSV* csv, int indVar)
    desvioPadrao = sqrt(variancia / (contador - 1.0));
    
    /* Cálculo da Mediana */
-   ordenaString(valores, 0, contador - 1);
+   ordenaStringNum(valores, 0, contador - 1);
    if (contador % 2 == 1) mediana = atof(valores[(contador - 1) / 2]);
    else mediana = (atof(valores[(contador / 2)]) + atof(valores[(contador / 2) - 1])) / 2;
    
@@ -825,7 +891,7 @@ void descricaoNum(aqvCSV* csv, int indVar)
       }
    }
 
-   ordenaString(valUnicos, 0, contadorUnicos - 1);
+   ordenaStringNum(valUnicos, 0, contadorUnicos - 1);
 
    qntAparece = (int*) malloc (contadorUnicos * sizeof(int));
    if (qntAparece == NULL) { free(valUnicos); return; }
@@ -985,51 +1051,34 @@ int ordenaDados(aqvCSV* csv, char *var, int opt)
  ------------------------------*/
 int selecionaDados(aqvCSV* csv, char* var)
 {
-   int i, j, contaVar, achouVar;
-   char buffer[MAX_BUF], *substr;
+   int i, j;
+   char *tok;
    
-   if (csv == NULL || var == NULL) return (0);
-
+   if (csv == NULL || var == NULL){
+      printf("ERROU!!!!!");  
+      return (0);
+   }
    /* Prepara os vetores de impressão
     * para a função selecionaDados() */
-   for (i = 0; i < csv->numLins; i++)
+   csv->printLins[0] = 1;
+   for (i = 1; i < csv->numLins; i++)
       csv->printLins[i] = 1;
 
    for (i = 0; i < csv->numCols; i++)
       csv->printCols[i] = 0;
-
-   /* Contagem de variáveis em var 
-    * Além disso, substitui espaços por nulo */
-   for (i = 0; i < strlen(var); i++)
-      printf("%c", var[i]);
    
-   contaVar = 1;
-   for (i = 0; i < strlen(var); i++)
-      if (var[i] == ' ') contaVar++;
+   tok = strtok(var, " ");
+   while (tok){
+      j = achaVariavel(csv, tok);
 
-   printf("Qntd. variaveis: %d\n", contaVar);
-   
-   /* Verifica se todas as variáveis dadas estão no arquivo
-    * Além disso, guarda os índices das colunas das variáveis
-   achouVar = 0;
-   for (i = 0; i < contaVar; i++){
-      for (j = 0; var[j] != ' ' && j < strlen(var); j++)
-         buffer[i] = var[i];
-      buffer[i] = '\0';
-      substr = separaString(var, i);
-      for (j = 0; j < csv->numCols; i++){
-         if (substr != NULL)
-            if (strcmp(substr, csv->arrVar[j].nome) == 0){
-               csv->printCols[j] = 1;
-               achouVar++;
-            }
-      }
+      if (j != -1) csv->printCols[j] = 1;
+      else return (0);
+
+      tok = strtok(NULL, " ");
    }
-   printf("\n");
-   if (achouVar != contaVar) return (0);*/
-   
+
    /* Imprime as informações */
-   //imprimeArquivo(csv);
+   imprimeArquivo(csv);
 
    return (1);
 }
@@ -1037,8 +1086,61 @@ int selecionaDados(aqvCSV* csv, char* var)
 /*------------------------------
       DADOS FALTANTES
  ------------------------------*/
-int dadosFaltantes(aqvCSV* csv, int escolha)
+void removeMedia(aqvCSV* csv)
 {
+   FILE* aqvNovo;
+   int lin, col, qtdCols, colsImpressas;
+   char buffer[MAX_BUF], *substr;
+
+   if (csv == NULL) return (0);
+
+   aqvNovo = freopen(nomeAqv, "w");
+   if (aqvNovo == NULL) return (0);
+
+   qtdCols = 0;
+   for (col = 0; col < csv->numCols; col++)
+      if (csv->printCols[col] == 1) qtdCols++;
+
+   /* Escrita do cabeçalho */
+   strcpy(buffer, csv->tabela[0].lin);
+   substituiVirgulas(buffer);
+
+   colsImpressas = 0;
+   for (col = 0; col < csv->numCols; col++){
+      if (csv->printCols[col] == 1){
+         colsImpressas++;
+         substr = separaString(buffer, col);
+         if (substr != NULL) fprintf(aqvNovo, "%s", substr);
+         if (colsImpressas < qtdCols) fprintf(aqvNovo, "%c", ',');
+      }
+   }
+   fprintf(aqvNovo, "%c", '\n');
+
+   /* Escrita do conteúdo */
+   for (lin = 1; lin < csv->numLins; lin++){
+      colsImpressas = 0;
+      if (csv->printLins[lin] == 1){
+         strcpy(buffer, csv->tabela[lin].lin);
+         substituiVirgulas(buffer);
+         for (col = 0; col < csv->numCols; col++){
+            if (csv->printCols[col] == 1){
+               colsImpressas++;
+               substr = separaString(buffer, col);
+               if (substr != NULL) fprintf(aqvNovo, "%s", substr);
+               if (colsImpressas < qtdCols) fprintf(aqvNovo, "%c", ',');
+            }
+         }
+         if (lin != csv->numLins - 1) fprintf(aqvNovo, "%c", '\n');
+      }
+   }
+
+   fclose(aqvNovo);
+   return (1);
+}
+
+int dadosFaltantes(aqvCSV* csv, int escolha, char* nomeAqv)
+{
+   FILE* aqv;
    int i, j;
    char buffer[MAX_BUF], *substr;
    
@@ -1069,13 +1171,45 @@ int dadosFaltantes(aqvCSV* csv, int escolha)
       imprimeArquivo(csv);
    }
    else if (escolha == 2){
-      return (1);
+      fclose(csv->aqv);
+
+      removeMedia(csv);
+
+      aqv = fopen(nomeAqv, "r");
+      csv->aqv = aqv;
+      free(csv->tabela);
+      free(csv->arrVar);
+      csv->tabela = geraTabela(aqv);
+      csv->arrVar = geraVariaveis(aqv);
    }
    else if (escolha == 3){
-      return (1);
+      fclose(csv->aqv);
+
+      removeProximo(csv);
+
+      aqv = fopen(nomeAqv, "r");
+      csv->aqv = aqv;
+      free(csv->tabela);
+      free(csv->arrVar);
+      csv->tabela = geraTabela(aqv);
+      csv->arrVar = geraVariaveis(aqv);
    }
    else if (escolha == 4){
-      return (1);
+      for (i = 0; i < csv->numLins; i++){
+         if (csv->printLins[i] == 1)
+            csv->printLins[i] = 0;
+         else
+            csv->printLins[i] = 1;
+      }
+
+      fclose(csv->aqv);
+      gravaCSV(csv, nomeAqv);
+      aqv = fopen(nomeAqv, "r");
+      csv->aqv = aqv;
+      free(csv->tabela);
+      free(csv->arrVar);
+      csv->tabela = geraTabela(aqv);
+      csv->arrVar = geraVariaveis(aqv);
    }
    else return (0);
 

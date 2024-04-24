@@ -1,0 +1,187 @@
+Nome,Idade,Profissao
+Luana,51.0,Arquiteto
+Fernanda,64.0,Gerente de Vendas
+Juliana,65.0,Analista de Sistemas
+Fernanda,26.0,Diretor (CTO)
+Rafael,56.0,Diretor (CTO)
+Ana,25.0,Dentista
+Leandro,64.0,Farmacêutico
+Francisco,32.0,Diretor Executivo (CEO)
+Felipe,31.0,Programador
+Adriana,31.0,Piloto
+Luciana,32.0,Cientista de Dados
+Carla,25.0,Piloto
+Joao,62.0,Dentista
+Claudia,44.0,Veterinário
+Antonio,52.0,Engenheiro de Petróleo
+Ricardo,46.0,Consultor
+Camila,63.0,Dentista
+Gabriel,58.0,Cientista de Dados
+Thiago,53.0,Gerente
+Mariana,34.0,Arquiteto
+Daniel,28.0,Piloto
+Paula,39.0,Analista de Sistemas
+Juliana,43.0,Gerente
+Gustavo,52.0,Diretor (CTO)
+Raquel,62.0,Gerente
+Rafael,32.0,Arquiteto
+Francisco,26.0,Advogado
+Beatriz,55.0,Diretor (CTO)
+Amanda,27.0,Engenheiro de Petróleo
+Lucas,39.0,Consultor
+Luana,38.0,Gerente
+Bruna,56.0,Consultor
+Leandro,57.0,Analista de Sistemas
+Ricardo,26.0,Dentista
+Rafael,35.0,Médico
+Luciana,50.0,Farmacêutico
+Sandra,29.0,Gerente
+Bruno,63.0,Piloto
+Leonardo,47.0,Médico
+Bruno,37.0,Consultor
+Carlos,32.0,Consultor
+Beatriz,31.0,Médico
+Ricardo,29.0,Analista de Sistemas
+Ana,39.0,Cientista de Dados
+Bruna,30.0,Veterinário
+Leandro,34.0,Farmacêutico
+Marcelo,33.0,Diretor Executivo (CEO)
+Marcelo,49.0,Advogado
+Rafael,54.0,Advogado
+Carla,52.0,Gerente de Vendas
+Mariana,26.0,Consultor
+Marcia,35.0,Gerente
+Pedro,53.0,Consultor
+Gabriela,49.0,Farmacêutico
+Claudia,53.0,Gerente de Vendas
+Jessica,61.0,Gerente
+Leonardo,29.0,Diretor (CTO)
+Amanda,61.0,Engenheiro de Petróleo
+Eliane,47.0,Cientista de Dados
+Rafael,31.0,Engenheiro
+Jessica,33.0,Piloto
+Fernanda,56.0,Engenheiro
+Maria,51.0,Analista de Sistemas
+Luciana,63.0,Engenheiro de Petróleo
+Mariana,54.0,Consultor
+Francisca,26.0,Veterinário
+Beatriz,59.0,Programador
+José,48.0,Farmacêutico
+Diego,62.0,Engenheiro
+Francisco,51.0,Gerente de TI
+Ricardo,39.0,Diretor Executivo (CEO)
+Ricardo,40.0,Engenheiro de Petróleo
+Marcos,65.0,Engenheiro de Petróleo
+Leandro,65.0,Dentista
+Antonio,49.0,Médico
+Marcelo,35.0,Veterinário
+Patricia,30.0,Arquiteto
+Bruno,57.0,Dentista
+Jessica,30.0,Gerente
+Larissa,58.0,Piloto
+Marcelo,47.0,Cientista de Dados
+Jessica,32.0,Engenheiro
+Rodrigo,52.0,Piloto
+Leandro,31.0,Engenheiro
+Raquel,30.0,Gerente de Vendas
+Adriana,41.0,Cientista de Dados
+Bruno,63.0,Piloto
+Gustavo,43.0,Consultor
+Amanda,56.0,Diretor Executivo (CEO)
+Rodrigo,38.0,Gerente de Vendas
+Fernanda,59.0,Diretor Executivo (CEO)
+Marcia,51.0,Consultor
+Larissa,57.0,Dentista
+Rodrigo,41.0,Diretor (CTO)
+Sandra,31.0,Gerente
+Luciana,55.0,Gerente de TI
+Francisco,55.0,Farmacêutico
+Adriana,40.0,Diretor (CTO)
+Jessica,53.0,Consultor
+Fernando,46.0,Engenheiro
+Eliane,60.0,Consultor
+Eduardo,39.0,Dentista
+Amanda,61.0,Engenheiro
+Guilherme,56.0,Cientista de Dados
+Fabiana,58.0,Engenheiro
+Eduardo,49.0,Arquiteto
+Paulo,42.0,Consultor
+Daniel,48.0,Analista de Sistemas
+Marcelo,58.0,Gerente
+Ricardo,42.0,Arquiteto
+Luana,61.0,Consultor
+Sandra,27.0,Gerente
+Thiago,61.0,Gerente
+Rodrigo,63.0,Gerente
+Raquel,53.0,Médico
+Fabiana,46.0,Consultor
+Joao,43.0,Analista de Sistemas
+Ana Paula,55.0,Advogado
+Amanda,30.0,Gerente de Vendas
+Leandro,43.0,Médico
+Daniel,61.0,Consultor
+Leandro,28.0,Gerente de TI
+Adriana,63.0,Programador
+Felipe,37.0,Arquiteto
+Francisco,33.0,Médico
+Leandro,41.0,Programador
+Mariana,35.0,Engenheiro de Petróleo
+José,47.0,Piloto
+Carlos,30.0,Analista de Sistemas
+Ana,59.0,Gerente
+Raquel,37.0,Médico
+Fatima,56.0,Programador
+Eduardo,64.0,Piloto
+Amanda,36.0,Arquiteto
+Francisco,50.0,Piloto
+Marcia,40.0,Veterinário
+Gabriela,58.0,Veterinário
+Pedro,58.0,Dentista
+Antonio,49.0,Farmacêutico
+Larissa,55.0,Gerente de Vendas
+Lucas,28.0,Gerente
+Fernanda,63.0,Advogado
+José,30.0,Gerente de TI
+Camila,30.0,Arquiteto
+Raquel,39.0,Farmacêutico
+Juliana,28.0,Programador
+Daniel,33.0,Programador
+Maria,58.0,Engenheiro
+Juliana,53.0,Cientista de Dados
+Ricardo,45.0,Piloto
+Paula,51.0,Médico
+Jessica,62.0,Cientista de Dados
+Amanda,43.0,Analista de Sistemas
+Matheus,42.0,Advogado
+Camila,47.0,Veterinário
+Ricardo,45.0,Diretor Executivo (CEO)
+Bruna,50.0,Cientista de Dados
+Vanessa,40.0,Veterinário
+Claudia,42.0,Dentista
+Fernanda,26.0,Gerente
+Raquel,56.0,Diretor Executivo (CEO)
+Ricardo,32.0,Cientista de Dados
+Leandro,49.0,Gerente
+Daniel,49.0,Gerente de TI
+Aline,45.0,Engenheiro
+Jose,39.0,Gerente de Vendas
+Fabiana,60.0,Médico
+Luciana,39.0,Gerente
+Thiago,38.0,Gerente
+Aline,55.0,Veterinário
+Marcos,30.0,Gerente
+Matheus,62.0,Piloto
+Luana,36.0,Gerente de Vendas
+Fernanda,58.0,Analista de Sistemas
+Gabriel,34.0,Piloto
+Fabiana,44.0,Programador
+Vanessa,28.0,Gerente de Vendas
+Jose,28.0,Veterinário
+Luiz,43.0,Analista de Sistemas
+Francisco,27.0,Gerente de TI
+Francisco,63.0,Arquiteto
+Raquel,53.0,Engenheiro
+Francisca,53.0,Advogado
+Claudia,25.0,Gerente
+José,49.0,Gerente de TI
+Adriana,25.0,Médico

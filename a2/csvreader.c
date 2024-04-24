@@ -50,7 +50,7 @@ int main(int argc, char** argv)
              "9) Fim\n");
       printf("Escolha a opcao: ");
       scanf("%d", &opt);
-      fflush(stdin);
+      getchar();
       printf("\n");
 
       switch (opt) {
@@ -72,12 +72,12 @@ int main(int argc, char** argv)
             /* --------------------------------- */
             /* Opção 3 - Filtros*/
             printf("Entre com a variavel: ");
-            scanf("%s", var);
-            fflush(stdin);
+            fgets(var, MAX_BUF, stdin);
+            sscanf(var, "%s", var);
 
             printf("Escolha um filtro ( == > >= < <= != ): ");
-            scanf("%s", comparador);
-            fflush(stdin);
+            fgets(comparador, MAX_BUF, stdin);
+            sscanf(comparador, "%s", comparador);
 
             if (!strcmp(comparador, "==")) filt = compIgual;
             else if (!strcmp(comparador, ">")) filt = compMaior;
@@ -91,8 +91,8 @@ int main(int argc, char** argv)
             }
 
             printf("Digite um valor: ");
-            scanf("%s", valor);
-            fflush(stdin);
+            fgets(valor, MAX_BUF, stdin);
+            sscanf(valor, "%s", valor);
 
             if (!filtros(csv, filt, var, valor)){
                printf("Nao foi possivel aplicar o filtro desejado.\n");
@@ -100,8 +100,8 @@ int main(int argc, char** argv)
             }
 
             printf("Deseja gravar um arquivo com os dados filtrados? [S|N] ");
-            scanf(" %c", &c);
-            fflush(stdin);
+            c = fgetc(stdin);
+            sscanf(c, "%c", c);
 
             if (c != 'S' && c != 'N'){
                printf("Opcao invalida.\n");
@@ -110,8 +110,9 @@ int main(int argc, char** argv)
 
             if (c == 'S'){
                printf("Entre com o nome do arquivo: ");
-               scanf("%s", nomeAqv);
-               fflush(stdin);
+               fgets(nomeAqv, MAX_BUF, stdin);
+               sscanf(nomeAqv, "%s", nomeAqv);
+
 
                if (!gravaCSV(csv, nomeAqv)){
                   printf("Erro ao gravar o arquivo.\n");
@@ -119,8 +120,8 @@ int main(int argc, char** argv)
                }
                
                printf("Deseja descartar os dados originais? [S|N] ");
-               scanf(" %c", &c);
-               fflush(stdin);
+               c = fgetc(stdin);
+               sscanf(c, "%c", c);
 
                if (c != 'S' && c != 'N'){
                   printf("Opcao invalida.\n");
@@ -139,6 +140,8 @@ int main(int argc, char** argv)
                      printf("Erro ao descartar o arquivo.\n");
                      break;
                   }
+                  free(filename);
+                  filename = strdup(nomeAqv);
                   printf("Arquivo descartado com sucesso.\n");
                } 
             }
@@ -149,8 +152,8 @@ int main(int argc, char** argv)
             /* --------------------------------- */
             /* Opção 4 - Descrição de Dados */
             printf("Entre com a variavel: ");
-            scanf("%s", var);
-            fflush(stdin);
+            fgets(var, MAX_BUF, stdin);
+            sscanf(var, "%s", var);
 
             if (!descricaoDados(csv, var))
                printf("Erro ao realizar a descricao da variavel.\n");
@@ -161,12 +164,12 @@ int main(int argc, char** argv)
             /* --------------------------------- */
             /* Opção 5 - Ordenação */
             printf("Entre com a variavel: ");
-            scanf("%s", var);
-            
-            fflush(stdin);
+            fgets(var, MAX_BUF, stdin);
+            sscanf(var, "%s", var);
 
             printf("Selecione uma opcao [A]scendente ou [D]escendente: ");
-            scanf(" %c", &c);
+            c = fgetc(stdin);
+            sscanf(c, "%c", c);
             if (c != 'A' && c != 'D'){
                printf("Opcao invalida.\n");
                break;
@@ -181,8 +184,8 @@ int main(int argc, char** argv)
             }
             
             printf("Deseja gravar um arquivo com os dados ordenados? [S|N] ");
-            scanf(" %c", &c);
-            fflush(stdin);
+            c = fgetc(stdin);
+            sscanf(c, "%c", c);
 
             if (c != 'S' && c != 'N'){
                printf("Opcao invalida.\n");
@@ -191,8 +194,8 @@ int main(int argc, char** argv)
 
             if (c == 'S'){
                printf("Entre com o nome do arquivo: ");
-               scanf("%s", nomeAqv);
-               fflush(stdin);
+               fgets(nomeAqv, MAX_BUF, stdin);
+               sscanf(nomeAqv, "%s", nomeAqv);
 
                if (!gravaCSV(csv, nomeAqv)){
                   printf("Erro ao gravar o arquivo.\n");
@@ -200,8 +203,8 @@ int main(int argc, char** argv)
                }
                
                printf("Deseja descartar os dados originais? [S|N] ");
-               scanf(" %c", &c);
-               fflush(stdin);
+               c = fgetc(stdin);
+               sscanf(c, "%c", c);
 
                if (c != 'S' && c != 'N'){
                   printf("Opcao invalida.\n");
@@ -220,6 +223,8 @@ int main(int argc, char** argv)
                      printf("Erro ao descartar o arquivo.\n");
                      break;
                   }
+                  free(filename);
+                  filename = strdup(nomeAqv);
                   printf("Arquivo descartado com sucesso.\n");
                } 
             }
@@ -230,25 +235,26 @@ int main(int argc, char** argv)
             /* --------------------------------- */
             /* Opção 6 - Seleção */
             printf("Entre com a(s) variavel(is) que deseja selecionar (separadas por espaco): ");
-            scanf("%[^\n]", var);
-            getchar();
+            fgets(var, MAX_BUF, stdin);
+            sscanf(var, "%[^\n]", var);
+
+            printf("\nVariavel: %s\n", var);
 
             if (!selecionaDados(csv, var))
                printf("Nao foi possivel selecionar os dados desejados.\n");
             
             printf("Deseja gravar um arquivo com as variaveis selecionadas? [S|N] ");
-            scanf(" %c", &c);
-            fflush(stdin);
+            c = fgetc(stdin);
 
-            if (c != 'S' || c != 'N'){
+            if (c != 'S' && c != 'N'){
                printf("Opcao invalida.\n");
                break;
             }
 
             if (c == 'S'){
                printf("Entre com o nome do arquivo: ");
-               scanf("%s", nomeAqv);
-               fflush(stdin);
+               fgets(nomeAqv, MAX_BUF, stdin);
+               sscanf(nomeAqv, "%s", nomeAqv);
 
                if (!gravaCSV(csv, nomeAqv)){
                   printf("Erro ao gravar o arquivo.\n");
@@ -271,7 +277,7 @@ int main(int argc, char** argv)
             fflush(stdin);
 
             if (1 <= escolha && escolha <= 4){
-               if (!dadosFaltantes(csv, escolha)){
+               if (!dadosFaltantes(csv, escolha, filename)){
                   printf("Erro ao executar a operacao com os dados faltantes.\n");
                }
                printf("Operacao concluida com sucesso.\n");
@@ -283,8 +289,7 @@ int main(int argc, char** argv)
             
             if (escolha == 1){
                printf("Deseja gravar um arquivo com os dados nulos? [S|N] ");
-               scanf(" %c", &c);
-               fflush(stdin);
+               c = fgetc(stdin);
 
                if (c != 'S' && c != 'N'){
                   printf("Opcao invalida.\n");
@@ -293,8 +298,8 @@ int main(int argc, char** argv)
 
                if (c == 'S'){
                   printf("Entre com o nome do arquivo: ");
-                  scanf("%s", nomeAqv);
-                  fflush(stdin);
+                  fgets(nomeAqv, MAX_BUF, stdin);
+                  sscanf(nomeAqv, "%s", nomeAqv);
 
                   if (!gravaCSV(csv, nomeAqv)){
                      printf("Erro ao gravar o arquivo.\n");
@@ -302,8 +307,8 @@ int main(int argc, char** argv)
                   }
                
                   printf("Deseja descartar os dados originais? [S|N] ");
-                  scanf(" %c", &c);
-                  fflush(stdin);
+                  c = fgetc(stdin);
+                  sscanf(c, "%c", c);
 
                   if (c != 'S' && c != 'N'){
                      printf("Opcao invalida.\n");
@@ -322,6 +327,8 @@ int main(int argc, char** argv)
                         printf("Erro ao descartar o arquivo.\n");
                         break;
                      }
+                     free(filename);
+                     filename = strdup(nomeAqv);
                      printf("Arquivo descartado com sucesso.\n");
                   } 
                }
@@ -332,7 +339,8 @@ int main(int argc, char** argv)
             /* ------------------------------------ */
             /* Opção 8 - Salva Dados */
             printf("Entre com o nome do arquivo: ");
-            scanf("%s", nomeAqv);
+            fgets(nomeAqv, MAX_BUF, stdin);
+            sscanf(nomeAqv, "%s", nomeAqv);
 
             if (!salvaDados(csv, nomeAqv))
                printf("Erro ao salvar o arquivo.\n");

@@ -1,22 +1,16 @@
 Nome,Sexo,Idade,Profissao,Salario,EC
-Marcia,M,18.0,Gerente,22227.04,Casado
 Luana,F,51.0,Arquiteto,13314.47,Casado
 Fernanda,F,64.0,Gerente de Vendas,7957.34,Divorciado
-Gustavo,M,19.0,Gerente,,Casado
 Juliana,M,65.0,Analista de Sistemas,13124.25,Divorciado
 Fernanda,F,26.0,Diretor (CTO),19271.64,Casado
 Rafael,F,56.0,Diretor (CTO),19973.33,Casado
-Ana,M,25.0,Dentista,13984.3,Divorciado
 Leandro,M,64.0,Farmacêutico,4649.43,Viúvo
 Francisco,F,32.0,Diretor Executivo (CEO),12245.16,Viúvo
 Felipe,M,31.0,Programador,14483.56,Solteiro
 Adriana,F,31.0,Piloto,3001.66,Divorciado
 Luciana,F,32.0,Cientista de Dados,20732.74,Casado
-Carla,F,25.0,Piloto,7730.55,Viúvo
 Joao,M,62.0,Dentista,9306.87,Divorciado
-Aline,M,,Médico,20860.3,Solteiro
 Claudia,M,44.0,Veterinário,7439.03,Divorciado
-Carla,F,20.0,Programador,13631.52,Divorciado
 Antonio,F,52.0,Engenheiro de Petróleo,4275.58,Viúvo
 Ricardo,F,46.0,Consultor,21583.09,Viúvo
 Camila,F,63.0,Dentista,9496.77,Viúvo
@@ -32,11 +26,9 @@ Rafael,F,32.0,Arquiteto,5414.88,Solteiro
 Francisco,M,26.0,Advogado,6939.15,Viúvo
 Beatriz,F,55.0,Diretor (CTO),9981.78,Viúvo
 Amanda,F,27.0,Engenheiro de Petróleo,19467.37,Solteiro
-José,M,20.0,Cientista de Dados,7898.0,Divorciado
 Lucas,F,39.0,Consultor,6313.97,Viúvo
 Luana,M,38.0,Gerente,8867.07,Casado
 Bruna,F,56.0,Consultor,15403.08,Viúvo
-José,M,24.0,Veterinário,20399.12,Solteiro
 Leandro,F,57.0,Analista de Sistemas,11244.39,Viúvo
 Ricardo,M,26.0,Dentista,4982.84,Divorciado
 Rafael,F,35.0,Médico,18688.55,Solteiro
@@ -46,10 +38,7 @@ Sandra,M,29.0,Gerente,7330.54,Viúvo
 Bruno,F,63.0,Piloto,17043.15,Viúvo
 Leonardo,F,47.0,Médico,12105.29,Casado
 Bruno,M,37.0,Consultor,8301.42,Divorciado
-Carla,F,23.0,Programador,8234.64,Casado
-Paulo,F,23.0,Dentista,10150.63,Solteiro
 Carlos,F,32.0,Consultor,3201.15,Viúvo
-Gabriel,F,22.0,Arquiteto,8058.59,Solteiro
 Beatriz,F,31.0,Médico,20854.3,Divorciado
 Ricardo,F,29.0,Analista de Sistemas,6131.94,Casado
 Ana,F,39.0,Cientista de Dados,8320.69,Solteiro
@@ -59,17 +48,14 @@ Marcelo,M,33.0,Diretor Executivo (CEO),14402.9,Divorciado
 Marcelo,M,49.0,Advogado,22462.85,Divorciado
 Rafael,M,54.0,Advogado,12259.75,Viúvo
 Carla,F,52.0,Gerente de Vendas,14526.0,Viúvo
-Rafael,F,19.0,Programador,22149.66,Viúvo
 Mariana,M,26.0,Consultor,5514.44,Solteiro
 Marcia,M,35.0,Gerente,17796.1,Divorciado
-Daniel,M,23.0,Gerente de TI,19092.74,Viúvo
 Pedro,F,53.0,Consultor,20168.69,Viúvo
 Gabriela,M,49.0,Farmacêutico,15217.64,Solteiro
 Claudia,F,53.0,Gerente de Vendas,20880.04,Divorciado
 Jessica,M,61.0,Gerente,13366.6,Divorciado
 Leonardo,M,29.0,Diretor (CTO),22666.32,Casado
 Anderson,F,37.0,Arquiteto,,Casado
-Ana Paula,M,19.0,Diretor Executivo (CEO),4859.79,Viúvo
 Amanda,F,61.0,Engenheiro de Petróleo,18962.88,Solteiro
 Eliane,M,47.0,Cientista de Dados,17243.67,Solteiro
 Rafael,M,31.0,Engenheiro,5576.88,Viúvo
@@ -79,7 +65,6 @@ Maria,M,51.0,Analista de Sistemas,11079.76,Divorciado
 Luciana,M,63.0,Engenheiro de Petróleo,16013.57,Casado
 Mariana,M,54.0,Consultor,3389.65,Viúvo
 Francisca,M,26.0,Veterinário,19008.9,Divorciado
-Daniel,F,22.0,Advogado,6083.58,Divorciado
 Beatriz,F,59.0,Programador,17057.06,Casado
 José,M,48.0,Farmacêutico,21569.23,Solteiro
 Diego,F,62.0,Engenheiro,12436.0,Divorciado
@@ -103,26 +88,21 @@ Adriana,M,41.0,Cientista de Dados,14520.71,Viúvo
 Bruno,M,63.0,Piloto,16562.07,Divorciado
 Gustavo,M,43.0,Consultor,18709.26,Solteiro
 Amanda,F,56.0,Diretor Executivo (CEO),16782.26,Divorciado
-Antonio,F,,Engenheiro de Petróleo,12143.78,Solteiro
 Rodrigo,M,38.0,Gerente de Vendas,21275.17,Divorciado
 Fernanda,F,59.0,Diretor Executivo (CEO),12385.54,Viúvo
 Marcia,F,51.0,Consultor,17306.7,Casado
 Larissa,F,57.0,Dentista,16606.82,Divorciado
 Rodrigo,M,41.0,Diretor (CTO),20081.56,Divorciado
 Sandra,M,31.0,Gerente,9896.4,Casado
-Joao,F,22.0,Engenheiro,6725.7,Viúvo
 Luciana,F,55.0,Gerente de TI,9077.05,Casado
 Francisco,F,55.0,Farmacêutico,11422.61,Casado
-Beatriz,F,18.0,Consultor,9519.43,Viúvo
 Adriana,F,40.0,Diretor (CTO),11318.62,Casado
 Jessica,M,53.0,Consultor,19822.52,Divorciado
 Fernando,F,46.0,Engenheiro,5940.26,Divorciado
 Eliane,F,60.0,Consultor,6903.16,Viúvo
 Eduardo,M,39.0,Dentista,20551.27,Divorciado
-Felipe,F,19.0,Dentista,20716.78,Solteiro
 Amanda,F,61.0,Engenheiro,16294.52,Viúvo
 Guilherme,M,56.0,Cientista de Dados,8401.54,Viúvo
-José,M,18.0,Engenheiro,7248.29,Solteiro
 Fabiana,M,58.0,Engenheiro,22195.24,Casado
 Eduardo,M,49.0,Arquiteto,11938.27,Viúvo
 Paulo,F,42.0,Consultor,11776.86,Casado
@@ -130,14 +110,12 @@ Daniel,M,48.0,Analista de Sistemas,22277.95,Viúvo
 Marcelo,F,58.0,Gerente,21456.93,Casado
 Ricardo,M,42.0,Arquiteto,9764.45,Solteiro
 Ana Paula,M,41.0,Dentista,,Casado
-Rodrigo,M,22.0,Gerente de TI,7065.6,Viúvo
 Luana,M,61.0,Consultor,19585.64,Solteiro
 Sandra,F,27.0,Gerente,12136.79,Divorciado
 Thiago,F,61.0,Gerente,14573.52,Viúvo
 Rodrigo,F,63.0,Gerente,10031.02,Casado
 Raquel,M,53.0,Médico,17607.58,Solteiro
 Fabiana,M,46.0,Consultor,8458.66,Solteiro
-Fatima,M,,Cientista de Dados,19932.25,Casado
 Joao,M,43.0,Analista de Sistemas,20163.71,Viúvo
 Ana Paula,F,55.0,Advogado,4688.18,Divorciado
 Amanda,M,30.0,Gerente de Vendas,16715.73,Viúvo
@@ -147,35 +125,27 @@ Leandro,M,28.0,Gerente de TI,20613.53,Viúvo
 Adriana,F,63.0,Programador,12500.03,Viúvo
 Felipe,F,37.0,Arquiteto,16566.24,Viúvo
 Francisco,M,33.0,Médico,15275.22,Viúvo
-Carla,M,24.0,Médico,19794.24,Casado
 Leandro,M,41.0,Programador,12800.42,Solteiro
 Mariana,M,35.0,Engenheiro de Petróleo,3109.8,Casado
-Matheus,F,23.0,Piloto,16220.29,Casado
 José,F,47.0,Piloto,3304.44,Solteiro
 Carlos,F,30.0,Analista de Sistemas,10488.05,Casado
 Ana,M,59.0,Gerente,3895.08,Viúvo
 Raquel,F,37.0,Médico,14736.0,Solteiro
 Fatima,M,56.0,Programador,9840.14,Solteiro
 Eduardo,F,64.0,Piloto,7975.77,Solteiro
-Leandro,M,20.0,Gerente,16930.67,Viúvo
-Matheus,F,24.0,Consultor,6092.04,Divorciado
 Amanda,M,36.0,Arquiteto,6396.37,Divorciado
 Francisco,F,50.0,Piloto,15407.59,Viúvo
 Marcia,M,40.0,Veterinário,3604.79,Divorciado
 Gabriela,M,58.0,Veterinário,9105.14,Solteiro
 Paulo,M,31.0,Piloto,,Casado
-Guilherme,F,22.0,Cientista de Dados,5263.47,Solteiro
 Pedro,M,58.0,Dentista,21909.03,Solteiro
 Antonio,M,49.0,Farmacêutico,17400.41,Divorciado
-Eliane,F,24.0,Gerente,16346.16,Casado
 Larissa,M,55.0,Gerente de Vendas,15062.95,Casado
 Lucas,M,28.0,Gerente,22232.19,Viúvo
 Fernanda,F,63.0,Advogado,8000.89,Casado
 José,M,30.0,Gerente de TI,4939.25,Divorciado
 Camila,F,30.0,Arquiteto,13213.38,Viúvo
-Ana Paula,F,24.0,Gerente,4833.96,Casado
 Raquel,F,39.0,Farmacêutico,4372.8,Divorciado
-Marcelo,F,23.0,Engenheiro de Petróleo,17602.96,Casado
 Juliana,M,28.0,Programador,11970.25,Divorciado
 Daniel,F,33.0,Programador,20917.22,Viúvo
 Maria,M,58.0,Engenheiro,15268.03,Casado
@@ -192,7 +162,6 @@ Bruna,M,50.0,Cientista de Dados,18725.06,Viúvo
 Vanessa,F,40.0,Veterinário,20291.45,Viúvo
 Claudia,M,42.0,Dentista,11417.1,Solteiro
 Fernanda,F,26.0,Gerente,22482.75,Casado
-Paula,F,20.0,Gerente de Vendas,7222.19,Divorciado
 Raquel,M,56.0,Diretor Executivo (CEO),7371.22,Viúvo
 Ricardo,M,32.0,Cientista de Dados,9031.53,Divorciado
 Leandro,F,49.0,Gerente,12703.29,Divorciado
@@ -203,7 +172,6 @@ Fabiana,F,60.0,Médico,21864.23,Solteiro
 Luciana,M,39.0,Gerente,10437.02,Divorciado
 Thiago,F,38.0,Gerente,17592.53,Solteiro
 Aline,F,55.0,Veterinário,20070.69,Divorciado
-Amanda,M,19.0,Dentista,11507.0,Viúvo
 Marcos,F,30.0,Gerente,3342.26,Divorciado
 Matheus,F,62.0,Piloto,14756.62,Casado
 Luana,M,36.0,Gerente de Vendas,21968.73,Divorciado
@@ -217,9 +185,6 @@ Francisco,M,27.0,Gerente de TI,10392.73,Viúvo
 Francisco,F,63.0,Arquiteto,18375.43,Viúvo
 Raquel,F,53.0,Engenheiro,10344.75,Solteiro
 Francisca,F,53.0,Advogado,3078.54,Viúvo
-Claudia,M,25.0,Gerente,5138.87,Solteiro
 José,F,49.0,Gerente de TI,18553.55,Solteiro
-Adriana,M,25.0,Médico,7507.64,Divorciado
 Matheus,M,45.0,Gerente,11252.62,Viúvo
 Eduardo,F,46.0,Dentista,17130.02,Casado
-Luana,M,47.0,Cientista de Dados,5443.72,Viúvo

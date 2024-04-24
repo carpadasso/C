@@ -101,7 +101,7 @@ int ordenaDados(aqvCSV* csv, char* var, int op);
 int selecionaDados(aqvCSV* csv, char* var);
 
 /* Resolve a respeito dos dados faltantes no arquivo. */
-int dadosFaltantes(aqvCSV* csv, int escolha);
+int dadosFaltantes(aqvCSV* csv, int escolha, char* nomeAqv);
 
 /* Salva em um novo arquivo os dados atuais do arquivo. */
 int salvaDados(aqvCSV* csv, char* nomeAqv);
